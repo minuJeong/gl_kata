@@ -12,6 +12,7 @@ import numpy as np
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import Qt
 
 
 class WatchdogWaiter(QThread):
@@ -42,7 +43,7 @@ class DebugRenderer(QtWidgets.QOpenGLWidget):
     def __init__(self):
         super(DebugRenderer, self).__init__()
 
-        self.u_width, self.u_height = 512, 512
+        self.u_width, self.u_height = 128, 128
         self.u_size_hor, self.u_size_ver = 8, 8
         self.gx, self.gy = (
             int(self.u_width / self.u_size_hor),
@@ -53,6 +54,12 @@ class DebugRenderer(QtWidgets.QOpenGLWidget):
 
         self.setMinimumSize(self.u_width, self.u_height)
         self.setMaximumSize(self.u_width, self.u_height)
+        self.setWindowFlags(
+            Qt.WindowStaysOnTopHint |
+            Qt.WindowCloseButtonHint |
+            Qt.WindowTransparentForInput
+        )
+        self.setWindowTitle("Debug Renderer")
 
     def read(self, path):
         """ gracefully read file contents at path """
@@ -95,7 +102,6 @@ class DebugRenderer(QtWidgets.QOpenGLWidget):
             ibo = self.gl.buffer(ibo)
 
             self.vao = self.gl.vertex_array(self.program, content, ibo)
-
             self.uniforms(
                 [self.cs, self.program],
                 ["u_width", "u_height"],
@@ -139,9 +145,14 @@ class DebugRenderer(QtWidgets.QOpenGLWidget):
         self.update()
 
 
-app = QtWidgets.QApplication([])
+def main():
+    app = QtWidgets.QApplication([])
 
-renderer = DebugRenderer()
-renderer.show()
+    renderer = DebugRenderer()
+    renderer.show()
 
-app.exec()
+    app.exec()
+
+
+if __name__ == "__main__":
+    main()
