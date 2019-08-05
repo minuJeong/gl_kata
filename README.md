@@ -3,8 +3,12 @@ KATA!
 
 requirements
 ---
-- Python 3.7
+- Written and tested on Python 3.7
+- OpenGL 4.6 compatible device
 - moderngl
 - numpy
 - imageio
-- OpenGL 4.6
+- Pillow
+- glm
+- PyQt5
+- pyGLFW
