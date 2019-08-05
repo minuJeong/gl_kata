@@ -1,0 +1,43 @@
+#version 460
+
+layout(local_size_x=8, local_size_y=8) in;
+
+layout(binding=0) buffer bind_0
+{
+    vec4 out_col[];
+};
+
+uniform uint u_width;
+uniform uint u_height;
+
+const uvec2 wh = uvec2(u_width, u_height);
+
+// https://gist.github.com/anonymous/5565091
+float sdf_hex(vec2 p)
+{
+    p.x *= 1.1547;
+    p.y += mod(floor(p.x), 2.0) * 0.5;
+    p = abs((mod(p, 1.0) - 0.5));
+    return abs(max(p.x * 1.5 + p.y, p.y * 2.0) - 1.0);
+}
+
+// hg_sdf
+float sdf_hexprism(vec3 p, vec2 h) {
+    vec3 q = abs(p);
+    return max(q.y - h.y, max(q.x * sqrt(3) * 0.5 + q.z * 0.5, q.z) - h.x);
+}
+
+
+void main()
+{
+    uvec2 xy = gl_LocalInvocationID.xy + gl_WorkGroupID.xy * gl_WorkGroupSize.xy;
+    vec2 uv = vec2(xy) / wh;
+    uint i = xy.x + xy.y * u_width;
+
+    float d = smoothstep(0.022, 0.025, sdf_hex(uv * 12.0));
+    // d += length(uv * 2.0 - 1.0);
+    // d = fract(d);
+
+    vec3 RGB = vec3(d);
+    out_col[i] = vec4(RGB, 1.0);
+}

@@ -1,0 +1,74 @@
+#version 460
+
+layout(local_size_x=8, local_size_y=8) in;
+
+layout(binding=0) buffer bind_1
+{
+    float out_height[];
+};
+
+layout(binding=1) buffer bind_0
+{
+    vec4 out_normal_sobel[];
+};
+
+layout(binding=2) buffer bind_2
+{
+    vec4 out_normal_offset[];
+};
+
+uniform uint u_width;
+uniform uint u_height;
+
+uint xy_to_i(vec2 xy) { return xy_to_i(uvec2(xy)); }
+uint xy_to_i(uvec2 xy)
+{
+    xy.x = min(max(xy.x, 0), u_width - 1);
+    xy.y = min(max(xy.y, 0), u_height - 1);
+    return xy.x + xy.y * u_width;
+}
+
+vec3 sobel_normal(uvec2 xy, float strength)
+{
+    float h_00 = out_height[xy_to_i(xy + uvec2(-1.0, -1.0))];
+    float h_10 = out_height[xy_to_i(xy + uvec2(+0.0, -1.0))];
+    float h_20 = out_height[xy_to_i(xy + uvec2(+1.0, -1.0))];
+
+    float h_01 = out_height[xy_to_i(xy + uvec2(-1.0, +0.0))];
+    float h_21 = out_height[xy_to_i(xy + uvec2(+0.0, +0.0))];
+
+    float h_02 = out_height[xy_to_i(xy + uvec2(-1.0, +1.0))];
+    float h_12 = out_height[xy_to_i(xy + uvec2(+0.0, +1.0))];
+    float h_22 = out_height[xy_to_i(xy + uvec2(+0.0, +1.0))];
+
+    float NX = h_00 - h_20 + 2.0 * h_01 - 2.0 * h_21 + h_02 - h_22;
+    float NY = h_00 + 2.0 * h_10 + h_20 - h_02 - 2.0 * h_12 - h_22;
+    float NZ = strength * sqrt(1.0 - NX * NX - NY * NY);
+    vec3 normal = vec3(NX, NY, NZ);
+    return normalize(normal);
+}
+
+vec3 offset_normal(uvec2 xy, float strength)
+{
+    float h_0 = out_height[xy_to_i(xy)];
+    float h_1 = out_height[xy_to_i(xy + uvec2(1.0, 0.0))];
+    float h_2 = out_height[xy_to_i(xy + uvec2(0.0, 1.0))];
+
+    vec3 tangent = vec3(1.0, 0.0, h_1 - h_0);
+    vec3 bitangent = vec3(0.0, 1.0, h_2 - h_0);
+    vec3 normal = cross(tangent, bitangent);
+    normal.z *= strength;
+    return normalize(normal);
+}
+
+void main()
+{
+    const uvec2 WH = uvec2(u_width, u_height);
+    const uvec2 xy = gl_LocalInvocationID.xy + gl_WorkGroupID.xy * gl_WorkGroupSize.xy;
+
+    vec2 vxy = vec2(xy);
+    vec2 uv = vxy / WH;
+
+    out_normal_sobel[xy_to_i(xy)] = vec4(sobel_normal(xy, 1.5), 1.0);
+    out_normal_offset[xy_to_i(xy)] = vec4(offset_normal(xy, 12.0), 1.0);
+}
