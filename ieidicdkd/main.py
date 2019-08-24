@@ -9,7 +9,16 @@ from watchdog.events import FileSystemEventHandler
 class Renderer(object):
     def read(self, path):
         with open(path, "r") as fp:
-            return fp.read()
+            context = fp.read()
+
+        lines = []
+        for line in context.splitlines():
+            if line.startswith("#include "):
+                lines.append(self.read(line.split("#include ")[1]))
+            else:
+                lines.append(line)
+
+        return "\n".join(lines)
 
     def init(self):
         self.gl = mg.create_context()
@@ -56,13 +65,19 @@ class Renderer(object):
         except Exception as e:
             print(e)
 
+    def uniform(self, uniform_data):
+        for n, v in uniform_data.items():
+            if n in self.program:
+                self.program[n].value = v
+
     def render(self):
+        self.uniform({"u_time": glfw.get_time()})
         self.vao.render()
 
     def start(self):
         glfw.init()
         glfw.window_hint(glfw.FLOATING, glfw.TRUE)
-        self.window = glfw.create_window(400, 400, "GLFW Preview", None, None)
+        self.window = glfw.create_window(700, 700, "GLFW Preview", None, None)
         glfw.make_context_current(self.window)
 
         self.init()
