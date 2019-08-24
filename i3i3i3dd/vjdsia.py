@@ -1,6 +1,7 @@
 import numpy as np
 import moderngl as mg
 import glfw
+import glm
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -20,6 +21,7 @@ class Context(object):
     gl = None
     should_recompile = False
 
+    compute_shaders = {}
     programs = []
     vaos = []
 
@@ -28,12 +30,12 @@ class Context(object):
         self.gl = gl
         self._vaos = []
 
-        self.u_width, self.u_height = width, height
-        self.u_vsize = volume_res
+        self.u_res = glm.ivec2(width, height)
+        self.u_vsize = glm.ivec3(volume_res)
         self.gx, self.gy, self.gz = (
-            int(volume_res[0] / 4),
-            int(volume_res[1] / 4),
-            int(volume_res[2] / 4),
+            int(self.u_vsize.x / 4),
+            int(self.u_vsize.y / 4),
+            int(self.u_vsize.z / 4),
         )
 
     def on_src_modified(self, e=None):
@@ -46,12 +48,15 @@ class Context(object):
             gl = self.gl
 
             self.cs_0 = gl.compute_shader(read("./gl/scene.cs"))
+            self.compute_shaders[self.gx, self.gy, self.gz] = self.cs_0
 
             content = [(self.vbo, "2f", "in_pos")]
             program = gl.program(
                 vertex_shader=read("./gl/default_vs.glsl"),
                 fragment_shader=read("./gl/visualize_volume_fs.glsl"),
             )
+
+            self.programs.append(program)
             self.vaos.append(gl.vertex_array(program, content, self.ibo))
 
             print("recompiled!")
@@ -61,6 +66,10 @@ class Context(object):
 
     def init(self):
         gl = self.gl
+
+        WHD = glm.ivec3(self.u_vsize)
+        self.volume_0 = gl.buffer(reserve=WHD.x * WHD.y * WHD.z * 4)
+
         self.vbo = gl.buffer(
             np.array([-1.0, -1.0, -1.0, +1.0, +1.0, -1.0, +1.0, +1.0])
             .astype(np.float32)
@@ -76,9 +85,38 @@ class Context(object):
         self.src_observer.schedule(recompile_handler, "./gl")
         self.src_observer.start()
 
+    def _uniform(self, p, uniform):
+        for n, v in {}.items():
+            if n not in p:
+                continue
+
+            p[n].value = v
+
+    def init_uniforms(self):
+        init_uniform = {
+            "u_res": self.u_res,
+            "u_vsize": self.u_vsize,
+        }
+        for cs in self.compute_shaders.values():
+            self._uniform(cs, init_uniform)
+
+        for program in self.programs:
+            self._uniform(program, init_uniform)
+
+    def frame_uniforms(self):
+        frame_uniform = {"u_time": glfw.get_time()}
+        for cs in self.compute_shaders.values():
+            self._uniform(cs, frame_uniform)
+
+        for program in self.programs:
+            self._uniform(program, frame_uniform)
+
     def render(self):
-        self.cs_0.run(self.gx, self.gy, self.gz)
-        list(map(lambda vao: vao.render(), self.vaos))
+        for xyz, cs in self.compute_shaders.items():
+            cs.run(xyz[0], xyz[1], xyz[2])
+
+        for vao in self.vaos:
+            vao.render()
 
     def poll_recompile(self):
         if not self.should_recompile:
@@ -95,13 +133,14 @@ def main():
 
     ctx = Context(mg.create_context(), width, height, volume_res)
     ctx.init()
+    ctx.init_uniforms()
 
     MINIMUM_TICK = 1.0 / 24.0
     t = glfw.get_time()
     while not glfw.window_should_close(window):
-
-        ctx.render()
         ctx.poll_recompile()
+        ctx.frame_uniforms()
+        ctx.render()
 
         glfw.swap_buffers(window)
         glfw.poll_events()

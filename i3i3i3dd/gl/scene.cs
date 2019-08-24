@@ -8,7 +8,7 @@ layout(binding=0) buffer v0
 };
 
 uniform uvec3 u_vsize;
-
+uniform ivec2 u_res;
 
 uint xyz_to_i(uvec3 xyz)
 {
