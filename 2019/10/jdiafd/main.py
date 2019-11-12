@@ -1,12 +1,10 @@
 from glm import *
 import glfw
 import moderngl as mg
-import numpy as np
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from util import Util
 from mesh import Mesh
 
 
