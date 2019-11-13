@@ -24,7 +24,7 @@ class Program(object):
         if not self.vs:
             self.vs = Loader.shader(self.vspath)
 
-        if not self.fs:
+        if not self.fs:  
             self.fs = Loader.shader(self.fspath)
 
     def compile(self):
