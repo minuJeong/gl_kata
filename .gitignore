@@ -9,3 +9,14 @@
 *.png
 *.jpg
 *.uasset
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.idb
+*.obj
+*.log
+*.tlog
+*.pdb
+*.ilk
+
+*.vs
