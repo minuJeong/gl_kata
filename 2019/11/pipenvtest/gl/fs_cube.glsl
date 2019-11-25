@@ -1,8 +1,8 @@
 #version 460
 
-in vec4 vs_position;
-in vec4 vs_normal;
-in vec2 vs_texcoord0;
+layout(location=0) in vec4 vs_position;
+layout(location=1) in vec4 vs_normal;
+layout(location=2) in vec2 vs_texcoord0;
 
 out vec4 fs_color;
 

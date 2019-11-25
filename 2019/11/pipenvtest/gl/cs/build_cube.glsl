@@ -20,6 +20,8 @@ void main()
     // xyz = vec3(-1.0 ~ +1.0)
     xyz = xyz * 2.0 - 1.0;
 
+    xyz.x += cos(u_time * 10.0) * sin(u_time * 10.0);
+
     Vertex vertex;
     vertex.position = vec4(xyz, 1.0);
     vertex.normal = vec4(0.0, 0.0, 0.0, 1.0);
