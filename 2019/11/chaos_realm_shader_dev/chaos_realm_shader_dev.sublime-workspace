@@ -1,0 +1,1472 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"perspectiv",
+				"perspective\t(function)"
+			],
+			[
+				"NotImplemented",
+				"NotImplementedError\t(class)"
+			],
+			[
+				"NotImpl",
+				"NotImplemented\t(instance)"
+			],
+			[
+				"WebRenderingConte",
+				"WebGL2RenderingContext\tvar"
+			],
+			[
+				"le_",
+				"le_current_batching_key\t(statement)"
+			],
+			[
+				"return",
+				"returnPressed"
+			],
+			[
+				"on_",
+				"on_emblem_batch_rotate_sleep_changed\t(function)"
+			],
+			[
+				"on_emblem",
+				"on_emblem_batch_rotate_sleep_changed\t(function)"
+			],
+			[
+				"setStep",
+				"setSingleStep\t(function)"
+			],
+			[
+				"btn_emblem",
+				"btn_rotate_emblems\t(statement)"
+			],
+			[
+				"has",
+				"has_mask"
+			],
+			[
+				"isv",
+				"is_visible"
+			],
+			[
+				"Eleme",
+				"ElementTree\t(module)"
+			],
+			[
+				"uv",
+				"tex_uv"
+			],
+			[
+				"proce",
+				"BaseProcess\t(class)"
+			],
+			[
+				"setcol",
+				"setColorGroup\t(function)"
+			],
+			[
+				"get_",
+				"get_blendmode\t(function)"
+			],
+			[
+				"setsize",
+				"setMaximumSize\t(function)"
+			],
+			[
+				"hightl",
+				"Highlight\t(instance)"
+			],
+			[
+				"Orien",
+				"Orientations\t(class)"
+			],
+			[
+				"ori",
+				"setOrientation\t(function)"
+			],
+			[
+				"KEY_ALT",
+				"KEY_LEFT_ALT\t(statement)"
+			],
+			[
+				"read",
+				"readline\t(function)"
+			],
+			[
+				"Windowstay",
+				"WindowStaysOnTopHint\t(instance)"
+			],
+			[
+				"u_cam",
+				"u_camerapos\t(statement)"
+			],
+			[
+				"is_drag_camera_rot",
+				"is_drag_camera_rotate\t(statement)"
+			],
+			[
+				"entty",
+				"select_entity_signal\t(statement)"
+			],
+			[
+				"is_drag",
+				"is_drag_camera\t(statement)"
+			],
+			[
+				"should",
+				"should_read_psd_tex\t(statement)"
+			],
+			[
+				"sho",
+				"should_read_psd_tex\t(statement)"
+			],
+			[
+				"addspac",
+				"addSpacerItem\t(function)"
+			],
+			[
+				"Raw",
+				"RAW_MOUSE_MOTION\t(statement)"
+			],
+			[
+				"set_window_size",
+				"set_window_size_callback\t(function)"
+			],
+			[
+				"meshes",
+				"meshes_minotaur\t(statement)"
+			],
+			[
+				"perspec",
+				"perspective\t(function)"
+			],
+			[
+				"mino",
+				"minotaur"
+			],
+			[
+				"compi",
+				"compute_ibo\t(statement)"
+			],
+			[
+				"NOne",
+				"None\t(keyword)"
+			],
+			[
+				"windll",
+				"windll\t(statement)"
+			],
+			[
+				"build",
+				"build_vao"
+			],
+			[
+				"inuv",
+				"in_uv"
+			],
+			[
+				"set_windowsize",
+				"set_window_size_callback\t(function)"
+			],
+			[
+				"mat2",
+				"mat2x2\t(class)"
+			],
+			[
+				"FileSystemEventH",
+				"FileSystemEventHandler\t(class)"
+			],
+			[
+				"GL_COMPRESSED_RGBA",
+				"GL_COMPRESSED_RGBA8_ETC2_EAC\t(statement)"
+			],
+			[
+				"GL_COMPRESSED_",
+				"GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT\t(statement)"
+			],
+			[
+				"GL_COMPRESSED_RGB",
+				"GL_COMPRESSED_RGBA\t(statement)"
+			],
+			[
+				"glCom",
+				"glCompressedTexImage2D\t(statement)"
+			],
+			[
+				"set_cursor_call",
+				"set_cursor_pos_callback\t(function)"
+			],
+			[
+				"mat3",
+				"mat3x4\t(class)"
+			],
+			[
+				"mat",
+				"mat2x4\t(class)"
+			],
+			[
+				"perspe",
+				"perspectiveFov\t(function)"
+			],
+			[
+				"signal",
+				"logger_signal"
+			],
+			[
+				"Qt",
+				"Qt\t(class)"
+			],
+			[
+				"img_",
+				"img_to_dds_bob\t(function)"
+			],
+			[
+				"Debug",
+				"DEBUG\t(statement)"
+			],
+			[
+				"ver",
+				"vertex_shader_screen\t(statement)"
+			],
+			[
+				"scree",
+				"take_screenshot"
+			],
+			[
+				"verte",
+				"vertex_arrays_debug\t(statement)"
+			],
+			[
+				"char",
+				"character\t(forstmt)"
+			],
+			[
+				"BIT",
+				"BIT_8\t(statement)"
+			],
+			[
+				"BI",
+				"BIT_8\t(statement)"
+			],
+			[
+				"quaop",
+				"QualityOption\t(class)"
+			],
+			[
+				"frag",
+				"fragment_shader"
+			],
+			[
+				"vet",
+				"vertex_shader"
+			],
+			[
+				"render",
+				"render_preview\t(function)"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "main.py",
+			"settings":
+			{
+				"buffer_size": 35,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++/C Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C Single File.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					""
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python_27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/V.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/C++/C Single File.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					""
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python_27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/V.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python_27.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python_27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/V.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/Virtualenv/Python + Virtualenv.sublime-build",
+					""
+				],
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python_27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/V.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/Python27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python.sublime-build",
+					""
+				],
+				[
+					"Packages/User/shared_bin_python_27.sublime-build",
+					""
+				],
+				[
+					"Packages/User/V.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/User/V.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"remove package",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"disable pep",
+				"Python: Disable Pep8 Linting On View"
+			],
+			[
+				"activate",
+				"Virtualenv: Activate"
+			],
+			[
+				"package control: ",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"pakcage list",
+				"Package Control: List Packages"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"new",
+				"Virtualenv: New"
+			],
+			[
+				"virtual env ",
+				"Virtualenv: New"
+			],
+			[
+				"virtualenv",
+				"Virtualenv: New"
+			],
+			[
+				"packages",
+				"Package Control: List Packages"
+			],
+			[
+				"sublime start",
+				"SublimeServer: Start SublimeServer"
+			],
+			[
+				"start sub",
+				"SublimeServer: Start SublimeServer"
+			],
+			[
+				"settings",
+				"Preferences: Settings"
+			],
+			[
+				"ayu",
+				"ayu: Activate theme"
+			],
+			[
+				"color sche",
+				"UI: Select Color Scheme"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"terminus",
+				"Terminus: Open Default Shell in Panel"
+			],
+			[
+				"set s py",
+				"Set Syntax: Python"
+			],
+			[
+				"activ",
+				"Set Syntax: Objective-C++"
+			],
+			[
+				"build",
+				"Build With: Flagshop_Run"
+			],
+			[
+				"sublack",
+				"Sublack: Format file"
+			],
+			[
+				"activa",
+				"Virtualenv: Activate"
+			],
+			[
+				"package contro: remove pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"package",
+				"Preferences: Browse Packages"
+			],
+			[
+				"remove packa",
+				"Package Control: Remove Package"
+			],
+			[
+				"terminal",
+				"Preferences: Terminal Settings – Default"
+			],
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"disable",
+				"Package Control: Disable Package"
+			],
+			[
+				"remove pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"disb",
+				"Package Control: Disable Package"
+			],
+			[
+				"black",
+				"Package Control: Enable Package"
+			],
+			[
+				"enable",
+				"Package Control: Enable Package"
+			],
+			[
+				"term",
+				"Terminal: Open in project folder"
+			],
+			[
+				"actv",
+				"Virtualenv: Activate"
+			],
+			[
+				"hex",
+				"Set Syntax: Hex"
+			],
+			[
+				"actvi",
+				"Virtualenv: Activate"
+			],
+			[
+				"setsypy",
+				"Set Syntax: Python"
+			],
+			[
+				"set syntax python",
+				"Set Syntax: Python"
+			],
+			[
+				"acti",
+				"Virtualenv: Activate"
+			],
+			[
+				"deac",
+				"Virtualenv: Deactivate"
+			],
+			[
+				"javascript",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"glsl",
+				"Set Syntax: GLSL"
+			],
+			[
+				"spaces",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"virtualenv deac",
+				"Virtualenv: Deactivate"
+			],
+			[
+				"virtualenv: new",
+				"Virtualenv: New"
+			],
+			[
+				"c++11",
+				"Build With: C++11"
+			],
+			[
+				"theme",
+				"UI: Select Theme"
+			],
+			[
+				"start",
+				"Sublack: Start Blackd Server"
+			],
+			[
+				"xml",
+				"Set Syntax: XML"
+			],
+			[
+				"send",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"sendto ",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"send to ",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"send to max",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"sendto",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"unfold",
+				"Code Folding: Unfold All"
+			],
+			[
+				"send ",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"checkout",
+				"Perforce: Checkout"
+			],
+			[
+				"send to ms",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"terminus shell",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"terminus key",
+				"Preferences: Terminal Key Bindings – Default"
+			],
+			[
+				"terminality",
+				"Preferences: Terminality Key Bindings – User"
+			],
+			[
+				"powe",
+				"Set Syntax: PowerShell"
+			],
+			[
+				"discor",
+				"Package Control: Discover Packages"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"terminus open",
+				"Terminus: Open Default Shell in Panel"
+			],
+			[
+				"send to",
+				"Sublime3dsMax: Send File to 3ds Max"
+			],
+			[
+				"spcaes",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"keybind",
+				"Preferences: Key Bindings"
+			],
+			[
+				"rename",
+				"Rename File"
+			],
+			[
+				"syntax: py",
+				"Set Syntax: Python"
+			],
+			[
+				"psac",
+				"Set Syntax: Pascal"
+			],
+			[
+				"spac",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"add",
+				"Subforce: Add File"
+			],
+			[
+				"defini",
+				"Python: Go to definition"
+			],
+			[
+				"build with",
+				"Build With: Python"
+			],
+			[
+				"insatal",
+				"Package Control: Install Local Dependency"
+			],
+			[
+				"hlsl",
+				"Set Syntax: HLSL"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"keybin",
+				"Preferences: Terminus Key Bindings"
+			],
+			[
+				"terminus k",
+				"Preferences: Terminus Key Bindings"
+			],
+			[
+				"material",
+				"Activate Materialize Theme"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 200.0,
+		"history":
+		[
+			"exit()",
+			"exit\\90",
+			"exit",
+			"pip"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev"
+	],
+	"file_history":
+	[
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/chaos_realm_shader_dev.sublime-workspace",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/Pipfile",
+		"/D/Local/_pyenvs/py36/Lib/site-packages/win32com/client/combrowse.py",
+		"/C/Users/minu.jeong/.virtualenvs/comtestdrive-38xCYYEN/Lib/site-packages/pythonwin/pywin/tools/browser.py",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/comtestdrive/Pipfile",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/iteroo.py",
+		"/D/TWAuto/branches/3k/mandate/three_kingdoms/working_data/VariantMeshes/_VariantModels/props/chinese/weighted/p_flag01_male01/h_square_flag_01.wsmodel",
+		"/D/TWAuto/branches/3k/mandate/three_kingdoms/working_data/VariantMeshes/_VariantModels/flags/ep/weighted/h_square_flag_ep_prince_of_chengdu.wsmodel",
+		"/D/TWAuto/branches/3k/mandate/three_kingdoms/working_data/VariantMeshes/_VariantModels/flags/mh/rigid/h_square_flag_mh_tao_qian_rigid.wsmodel",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/photoshop_com.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/_inspect.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/2.7/internal/game_data/animation.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/flagshop_build.spec",
+		"/D/TW/branches/warhammer3/dev/warhammer/working_data/RigidModels/Buildings/Textures/vmp_rural_alphas_normal.dds",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/util.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/util_p4.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/Pipfile",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/vcs/core.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/iteroo.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/flagshop.spec",
+		"/C/Users/minu.jeong/.PyCharm2019.2/system/python_stubs/10304083/glm/__init__.py",
+		"/C/Users/minu.jeong/.PyCharm2019.2/system/python_stubs/10304083/glm/_glm.py",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/pipenvtest/gl/cs/_struct.glsl",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/pipenvtest/gl/_struct.glsl",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/avdsavdsa/main.py",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/main.html",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/ts/main.ts",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/ts/main.js",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/babylon.d.ts",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/ts/tsconfig.json",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/js/main.ts",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/js/tsconfig.json",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/js/main.js",
+		"/D/Local/Python/sublime_projects/FundayFriday/webgl_tryout/css/main.css",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/perforce/host.py",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/perforce/client.py",
+		"/C/Users/minu.jeong/AppData/Local/Programs/Python/Python37/lib/threading.py",
+		"/D/Local/_pyenvs/py37/lib/site-packages/PIL/Image.py",
+		"/D/TW/shared_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/perforce/client.py",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/perforce/host.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/gl/fs_flag.glsl",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/faction_banners.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/scene.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/gl/compute/maskbuffer.glsl",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/perforce/client.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/perforce/__init__.py",
+		"/D/TW/shared_tools/resource_tools/Animation_Tools/python/2.7/internal/ca_perforce.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/external/P4.py",
+		"/D/TW/shared_tools/resource_tools/Animation_Tools/shared/python/3.6/external/P4.py",
+		"/C/UE4_SOURCE/UnrealEngine/Engine/Extras/Maya_AnimationRiggingTools/MayaTools/General/Scripts/P4.py",
+		"/C/UE4_SOURCE/UnrealEngine/Engine/Extras/Maya_AnimationRiggingTools/MayaTools/General/Scripts/perforceUtils.py",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/hdr_to_dds/util.py",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/hdr_to_dds/entry.py",
+		"/C/Users/minu.jeong/AppData/Roaming/Microsoft/Teams/storage.json",
+		"/C/UE4_SOURCE/UnrealEngine/README.md",
+		"/D/Local/_pyenvs/py37/lib/site-packages/imageio/core/functions.py",
+		"/D/TW/branches/3k/new_year/three_kingdoms/raw_data/db/faction_civil_war_setups.xml",
+		"/T/branches/3k/new_year/three_kingdoms/raw_data/db/faction_banners.xml",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/gl/fs_emblem.glsl",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/flagshop.sublime-project",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/internal/flagshop/flagshop.sublime-workspace",
+		"/D/Local/Python/sublime_projects/flagshop/util.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/psd_tools/api/layers.py",
+		"/D/Local/Python/sublime_projects/flagshop/gl/fs_postprocess.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/log.py",
+		"/D/Local/Python/sublime_projects/flagshop/faction_banners.py",
+		"/D/Local/Python/sublime_projects/flagshop/help.py",
+		"/D/Local/Python/sublime_projects/flagshop/__screenshot.png",
+		"/D/Local/Python/sublime_projects/flagshop/gl/_structs.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/scene.py",
+		"/D/Local/Python/sublime_projects/flagshop/gl/vs_screen.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/gl/fs_screen.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/technique.py",
+		"/D/Local/Python/sublime_projects/flagshop/gl/vs_emblem.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/photoshop_com.py",
+		"/D/Local/Python/sublime_projects/flagshop/gl/fs_emblem.glsl",
+		"/C/Program Files/Epic Games/UE_4.23/Engine/Shaders/Private/TonemapCommon.ush",
+		"/C/Program Files/Epic Games/UE_4.23/Engine/Shaders/Private/ACES.ush",
+		"/C/Program Files/Epic Games/UE_4.23/Engine/Shaders/Private/PostProcessTonemap.usf",
+		"/D/Local/Python/sublime_projects/flagshop/custom_widgets.py",
+		"/D/Local/Python/sublime_projects/flagshop/.gitignore",
+		"/D/Local/Python/sublime_projects/flagshop/debug.py",
+		"/D/Local/Python/sublime_projects/flagshop/flagshop.sublime-project",
+		"/D/Local/Python/sublime_projects/flagshop/nsightrun.ps1",
+		"/D/TW/shared_tools/resource_tools/Animation_Tools/shared/python/3.6/external/psd_tools/api/mask.py",
+		"/D/Local/Python/sublime_projects/flagshop/gl/fs_technique_all.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/___emblem.png",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/external/psd_tools/api/adjustments.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/psd_tools/constants.py",
+		"/D/Local/Python/sublime_projects/flagshop/flagshop_build.spec",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/psd_tools/api/pil_io.py",
+		"/C/resource_tools/resource_tools/Animation_Tools/shared/python/3.6/internal/hdr_to_dds/gl/hg_sdf.glsl",
+		"/D/Local/Python/sublime_projects/flagshop/flagshop.py",
+		"/C/Users/minu.jeong/AppData/Roaming/Sublime Text 3/Packages/Terminal/Terminal.sublime-settings",
+		"/C/Users/minu.jeong/AppData/Roaming/Sublime Text 3/Packages/User/Terminal.sublime-settings",
+		"/D/Local/Python/sublime_projects/flagshop/gl/inspect/water.glsl",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/gl/inspect.glsl",
+		"/C/Users/minu.jeong/Downloads/HLSL2GLSLConverter/testshaders/ConverterTest.fx",
+		"/C/Users/minu.jeong/Downloads/HLSL2GLSLConverter/testshaders/TestPS.glsl",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/in_buffer.bytes",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/in_buffer.minu",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/imageio/plugins/freeimage.py",
+		"/D/Local/_pyenvs/py37/lib/site-packages/pkg_resources/__init__.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/numpy/compat/_inspect.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/imageio/core/format.py",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/colormap_raw.csv",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/output_0.png",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/lighting_VS_PS.csv",
+		"/C/Users/minu.jeong/Desktop/water_reflection_debug/colormap_raw.dds",
+		"/D/TW/branches/3k/states/three_kingdoms/working_data/shaders/3k_ws_battle_waterfall.xml.hlsl",
+		"/D/Local/Python/sublime_projects/flagshop/build.ps1",
+		"/D/Local/Python/sublime_projects/flagshop/flagshop.spec",
+		"/D/Local/Python/sublime_projects/flagshop/_scratch.py",
+		"/D/Local/Python/sublime_projects/flagshop/run.bat",
+		"/D/Local/_pyenvs/py37/Scripts/Activate.ps1",
+		"/D/Local/_pyenvs/py37/Scripts/activate",
+		"/D/Local/Python/sublime_projects/flagshop/entry.spec",
+		"/D/Local/Python/sublime_projects/flagshop/_entry_spec_backup.spec",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/glfw/GLFW.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/glfw/__init__.py",
+		"/D/Local/Python/sublime_projects/flagshop/gl/fs_red.glsl",
+		"/T/branches/3k/mandate/three_kingdoms/raw_data/db/faction_banners.xml",
+		"/D/TW/shared_tools/resource_tools/Animation_Tools/shared/python/3.6/external/win32com/__init__.py",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/external/pywin32.pth",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/bin/Lib/site-packages/pkg_resources/__init__.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/pywin32.pth",
+		"/Q/resource_tools/Animation_Tools/shared/python/3.6/bin/Lib/site-packages/pythoncom.py",
+		"/D/Local/_pyenvs/py37/Lib/site-packages/win32com/__init__.py"
+	],
+	"find":
+	{
+		"height": 55.3333333333
+	},
+	"find_in_files":
+	{
+		"height": 158.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "main.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 35,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								35,
+								35
+							]
+						],
+						"settings":
+						{
+							"glslvalidator_configured": true,
+							"glslvalidator_enabled": 1,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 73.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.CppBuilder":
+	{
+		"height": 150.0
+	},
+	"output.Terminus":
+	{
+		"height": 475.0
+	},
+	"output.Terminus 2":
+	{
+		"height": 150.0
+	},
+	"output.Terminus 3":
+	{
+		"height": 364.0
+	},
+	"output.Terminus 4":
+	{
+		"height": 377.0
+	},
+	"output.Terminus 5":
+	{
+		"height": 473.0
+	},
+	"output.Terminus 6":
+	{
+		"height": 150.0
+	},
+	"output.Terminus 7":
+	{
+		"height": 150.0
+	},
+	"output.Terminus 8":
+	{
+		"height": 325.0
+	},
+	"output.Terminus 9":
+	{
+		"height": 668.0
+	},
+	"output.description_output_panel":
+	{
+		"height": 156.0
+	},
+	"output.doc":
+	{
+		"height": 0.0
+	},
+	"output.exec":
+	{
+		"height": 242.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "chaos_realm_shader_dev.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pho",
+				"photoshop_com.py"
+			],
+			[
+				"util",
+				"util.py"
+			],
+			[
+				"wsmode",
+				"game_data\\wsmodel.py"
+			],
+			[
+				"p4",
+				"util_p4.py"
+			],
+			[
+				"render",
+				"render.py"
+			],
+			[
+				"_stru",
+				"gl\\cs\\_struct.glsl"
+			],
+			[
+				"log.py",
+				"log.py"
+			],
+			[
+				"pscom",
+				"photoshop_com.py"
+			],
+			[
+				"log",
+				"log.py"
+			],
+			[
+				"scene",
+				"scene.py"
+			],
+			[
+				"fs_po",
+				"gl\\fs_postprocess.glsl"
+			],
+			[
+				"vsscre",
+				"gl\\vs_screen.glsl"
+			],
+			[
+				"vs_embl",
+				"gl\\vs_emblem.glsl"
+			],
+			[
+				"psco",
+				"photoshop_com.py"
+			],
+			[
+				"fs_emblem",
+				"gl\\fs_emblem.glsl"
+			],
+			[
+				"customwid",
+				"custom_widgets.py"
+			],
+			[
+				"util.py",
+				"util.py"
+			],
+			[
+				"waterpla",
+				"WaterPlane.hlsl"
+			],
+			[
+				"fs_all",
+				"gl\\fs_technique_all.glsl"
+			],
+			[
+				"water",
+				"WaterPlane.hlsl"
+			],
+			[
+				"photoshop_com",
+				"photoshop_com.py"
+			],
+			[
+				"_st",
+				"gl\\_structs.glsl"
+			],
+			[
+				"struct",
+				"gl\\_structs.glsl"
+			],
+			[
+				"struc",
+				"gl\\_structs.glsl"
+			],
+			[
+				"loader",
+				"loader.py"
+			],
+			[
+				"fragment",
+				"gl\\minotaur_head\\fragment.glsl"
+			],
+			[
+				"glyph",
+				"gl\\glyph_fragment_shader.glsl"
+			],
+			[
+				"minotaur_head",
+				"mesh\\minotaur_head.vbo"
+			],
+			[
+				"screfs",
+				"gl\\screen_fs.glsl"
+			],
+			[
+				"DeferredShadingCommon.ush",
+				"DeferredShadingCommon.ush"
+			],
+			[
+				"model",
+				"ShadingModels.ush"
+			],
+			[
+				"screev",
+				"gl\\screen_vtx.glsl"
+			],
+			[
+				"lighting",
+				"lighting.hlsl"
+			],
+			[
+				"light",
+				"environment_specular_light.hlsl"
+			],
+			[
+				"legac",
+				"legacy_fog.hlsl"
+			],
+			[
+				"legacy_fog",
+				"legacy_fog.hlsl"
+			],
+			[
+				"capsulelightinte",
+				"CapsuleLightIntegrate.ush"
+			],
+			[
+				"rect",
+				"RectLight.ush"
+			],
+			[
+				"DynamicLightingCommon.ush",
+				"DynamicLightingCommon.ush"
+			],
+			[
+				"DeferredLight",
+				"DeferredLightPixelShaders.usf"
+			],
+			[
+				"DeferredLighting",
+				"DeferredLightingCommon.ush"
+			],
+			[
+				"brdf",
+				"BRDF.ush"
+			],
+			[
+				"sky.hlsl",
+				"sky.hlsl"
+			],
+			[
+				"FXConfig.hlsl",
+				"FXConfig.hlsl"
+			],
+			[
+				"camera.hlsl",
+				"camera.hlsl"
+			],
+			[
+				"paralle",
+				"parallel_split_shadowing.hlsl"
+			],
+			[
+				"math.hlsl",
+				"math.hlsl"
+			],
+			[
+				"gBuffer.hlsl",
+				"gBuffer.hlsl"
+			],
+			[
+				"colorimetry.hlsl",
+				"colorimetry.hlsl"
+			],
+			[
+				"hdr_",
+				"HDR_To_Screen.hlsl"
+			],
+			[
+				"ma\t",
+				"main.py"
+			],
+			[
+				"entry",
+				"entry.py"
+			],
+			[
+				"main",
+				"main.py"
+			],
+			[
+				"input",
+				"input.py"
+			],
+			[
+				"hgsdfg",
+				"gl\\hg_sdf.glsl"
+			],
+			[
+				"build.py",
+				"art_tools\\python\\code\\shared_modules\\utils\\applications\\build.py"
+			],
+			[
+				"ApplicationBuilder",
+				"resource_tools\\Animation_Tools\\apps\\maya\\2016\\creative_maya\\scripts\\creative_maya\\tools\\reaction\\plugins\\ca_softik_2bone\\v1\\builder.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 298.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
