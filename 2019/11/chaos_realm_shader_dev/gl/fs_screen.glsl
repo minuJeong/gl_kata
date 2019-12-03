@@ -1,6 +1,6 @@
 #version 460
-#define SCALE 4.3
-#define OCTAVE 5
+#define SCALE 3.0
+#define OCTAVE 6
 
 in vec4 vs_pos;
 in vec2 vs_texcoord;
@@ -8,10 +8,11 @@ out vec4 fs_color;
 
 uniform float u_time;
 uniform float u_aspect;
+layout(location=0) uniform sampler2D u_noisecache;
 
 float random(vec2 uv)
 {
-    return fract(sin(dot(uv, vec2(12.4321, 56.7664))) * 53421.45321);
+    return fract(sin(dot(uv, vec2(12.4321, 56.7664))) * 46421.45321);
 }
 
 float noise(vec2 uv)
@@ -25,7 +26,6 @@ float noise(vec2 uv)
     float d = random(coord + vec2(1.0, 1.0));
 
     uv = uv * uv * (3.0 - 2.0 * uv);
-
     return mix(a, b, uv.x) + (c - a) * uv.y * (1.0 - uv.x) + (d - b) * uv.x * uv.y;
 }
 
@@ -37,15 +37,13 @@ float truchet(vec2 uv, float scale)
     vec2 coord = floor(uv);
     uv = fract(uv);
 
-    // coord.x += u_time * 0.5e-6;
-
     float d = random(coord) - 0.5;
     bool r = d < 0.0;
     uv.x = r ? uv.x : 1.0 - uv.x;
 
     float x = min(length(uv), length(1.0 - uv));
 
-    float LINE = 0.24;
+    float LINE = 0.15;
     x = smoothstep(0.5+LINE, 0.5-LINE, x) * smoothstep(0.5-LINE, 0.5+LINE, x);
     return x;
 }
@@ -65,44 +63,113 @@ float fbm(vec2 uv)
     return res;
 }
 
-float stack_fbm(vec2 uv, float scale)
+void preview_fbm_full()
 {
-    uv *= scale;
+    vec2 UV = vs_pos.xy;
+    UV.x *= u_aspect;
+    UV *= 4.0;
 
-    vec2 t = u_time * vec2(0.21, 0.23);
+    float x, y;
+    {
+        vec2 t = u_time * vec2(0.12, 0.05);
+        vec2 q, r;
 
-    vec2 q;
-    q.x = fbm(uv.xy) + t.x;
-    q.y = fbm(uv.yx) + t.y;
+        vec2 uv = UV;
+        uv *= SCALE;
 
-    t *= vec2(0.84, 0.66);
+        q.x = fbm(uv.xy);
+        q.y = fbm(uv.yx);
 
-    vec2 r;
-    r.x = fbm(uv.yx + q + t.x);
-    r.y = fbm(uv.xy + q + t.y);
+        y = fbm(uv + q + t);
 
-    t *= vec2(0.34, 0.54);
+        t *= 2.851;
+        r = vec2(y, 1.0 - y);
 
-    return fbm(uv + r + t);
+        x = fbm(uv + r + t);
+    }
+    vec3 c0 = vec3(12.25, 6.26, 1.6);
+    vec3 c1 = vec3(0.0, 0.05, 0.36);
+
+    x = x * x;
+    vec3 RGB = c0 * x + c1 * (1.0 - x);
+    RGB = RGB / (1.0 + RGB);
+
+    RGB = clamp(RGB, 0.0, 1.0);
+    fs_color = vec4(RGB, 1.0);
+}
+
+void preview_fbm()
+{
+    vec2 UV = vs_pos.xy;
+    UV.x *= u_aspect;
+    float x = fbm(UV * SCALE);
+    fs_color = vec4(x, x, x, 1.0);
+}
+
+void preview_fbm_with_tilable()
+{
+    vec2 UV = vs_pos.xy;
+    UV.x *= u_aspect;
+    UV.x += u_time * 0.1;
+
+    float x = fbm(UV * 20.0);
+    fs_color = vec4(x, x, x, 1.0);
+}
+
+void preview_using_noisecache()
+{
+    vec2 UV = vs_pos.xy * 0.5 + 0.5;
+    vec4 texcolor = texture(u_noisecache, UV);
+
+    fs_color.xyz = texcolor.xyz;
+    fs_color.w = 1.0;
+}
+
+void preview_stackfbm_using_noisecache()
+{
+    vec2 UV = vs_pos.xy * 0.3;
+    UV.x -= u_time * 0.0002;
+
+    float c = cos(u_time);
+    float s = sin(u_time);
+
+    float x, y;
+    {
+        vec2 t = u_time * vec2(0.005, -0.005);
+        vec2 q, r;
+
+        vec2 uv = UV;
+        uv *= 0.6;
+
+        q.x = texture(u_noisecache, uv.xy / SCALE).x;
+        q.y = 1.0 - q.x;
+        q /= SCALE * 8.0;
+
+        r.x = texture(u_noisecache, uv + q).x;
+        r.y = 30.0 - r.x;
+        r /= SCALE * 12.0;
+
+        vec2 xuv = uv + r + t;
+        x = texture(u_noisecache, xuv).x;
+    }
+
+    vec3 c0 = vec3(12.25, 6.26, 1.6);
+    vec3 c1 = vec3(0.0, 0.05, 0.36);
+
+    x = pow(x, 2.22);
+    vec3 RGB = c0 * x + c1 * (1.0 - x);
+    RGB = RGB / (1.0 + RGB);
+
+    RGB = clamp(RGB, 0.0, 1.0);
+    fs_color = vec4(RGB, 1.0);
 }
 
 void main()
 {
-    vec2 UV = vs_pos.xy;
-    UV.x *= u_aspect;
+    // preview_fbm();
+    // preview_using_noisecache();
 
-    // float x = truchet(UV, SCALE * 2.0);
-    float x = stack_fbm(UV, SCALE);
-
-    vec3 c0 = vec3(0.89, 0.77, 0.77);
-    vec3 c1 = vec3(0.66, 0.23, 0.22);
-    vec3 c2 = vec3(0.012, 0.003, 0.002);
-
-    float r = x * 1.23;
-
-    vec3 RGB;
-    RGB = mix(c0, c1, max(r - 1.0, 0.0));
-    RGB = mix(RGB, c2, max(r, 0.0));
-
-    fs_color = vec4(RGB, 1.0);
+    // preview_fbm_with_tilable();
+    // preview_fbm_full();
+    preview_stackfbm_using_noisecache();
 }

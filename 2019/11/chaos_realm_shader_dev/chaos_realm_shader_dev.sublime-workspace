@@ -275,7 +275,16 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 35,
+				"buffer_size": 3102,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "gl/fs_screen.glsl",
+			"settings":
+			{
+				"buffer_size": 1974,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -553,6 +562,10 @@
 		"selected_items":
 		[
 			[
+				"activate",
+				"Virtualenv: Activate"
+			],
+			[
 				"remove package",
 				"Package Control: Remove Package"
 			],
@@ -563,10 +576,6 @@
 			[
 				"disable pep",
 				"Python: Disable Pep8 Linting On View"
-			],
-			[
-				"activate",
-				"Virtualenv: Activate"
 			],
 			[
 				"package control: ",
@@ -905,10 +914,17 @@
 	},
 	"expanded_folders":
 	[
-		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev"
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/gl",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/mesh"
 	],
 	"file_history":
 	[
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/gl/vs_screen.glsl",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/_makevertices.py",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/mesh/screen_mesh.vb",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/mesh/screen_mesh.ib",
+		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/chaos_realm_shader_dev.sublime-project",
 		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/chaos_realm_shader_dev.sublime-workspace",
 		"/D/Local/Python/sublime_projects/gl_kata/2019/11/chaos_realm_shader_dev/Pipfile",
 		"/D/Local/_pyenvs/py36/Lib/site-packages/win32com/client/combrowse.py",
@@ -1031,16 +1047,11 @@
 		"/D/Local/_pyenvs/py37/Lib/site-packages/glfw/__init__.py",
 		"/D/Local/Python/sublime_projects/flagshop/gl/fs_red.glsl",
 		"/T/branches/3k/mandate/three_kingdoms/raw_data/db/faction_banners.xml",
-		"/D/TW/shared_tools/resource_tools/Animation_Tools/shared/python/3.6/external/win32com/__init__.py",
-		"/Q/resource_tools/Animation_Tools/shared/python/3.6/external/pywin32.pth",
-		"/Q/resource_tools/Animation_Tools/shared/python/3.6/bin/Lib/site-packages/pkg_resources/__init__.py",
-		"/D/Local/_pyenvs/py37/Lib/site-packages/pywin32.pth",
-		"/Q/resource_tools/Animation_Tools/shared/python/3.6/bin/Lib/site-packages/pythoncom.py",
-		"/D/Local/_pyenvs/py37/Lib/site-packages/win32com/__init__.py"
+		"/D/TW/shared_tools/resource_tools/Animation_Tools/shared/python/3.6/external/win32com/__init__.py"
 	],
 	"find":
 	{
-		"height": 55.3333333333
+		"height": 28.0
 	},
 	"find_in_files":
 	{
@@ -1054,6 +1065,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"7",
+			"0",
+			";\n"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1071,7 +1085,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -1080,15 +1094,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 35,
+						"buffer_size": 3102,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								35,
-								35
+								1337,
+								1337
 							]
 						],
 						"settings":
@@ -1098,7 +1112,37 @@
 							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 763.333333333,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "gl/fs_screen.glsl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1974,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1209,
+								1209
+							]
+						],
+						"settings":
+						{
+							"glslvalidator_configured": true,
+							"glslvalidator_enabled": 1,
+							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 816.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1194,7 +1238,7 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "",
+	"pinned_build_system": "Packages/Virtualenv/Python + Virtualenv.sublime-build",
 	"project": "chaos_realm_shader_dev.sublime-project",
 	"replace":
 	{
