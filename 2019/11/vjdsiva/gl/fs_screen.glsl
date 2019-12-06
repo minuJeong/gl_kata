@@ -57,14 +57,13 @@ float sdf(vec3 p, bool is_color, inout Material material)
     float blend = abs(jump - 3.0) * 0.3 + 0.2;
     float distance = op_union_round(d_sph_0, d_box_0, blend);
 
-    // const float freq = 40.0;
-    // distance += cos(p.x * freq) * cos(p.y * freq) * cos(p.z * freq) * 0.02;
+    const float freq = 40.0;
+    const float disp = 0.01;
+    distance += cos(p.x * freq) * cos(p.y * freq) * cos(p.z * freq) * disp;
 
     if (is_color)
     {
-        float clr_blend = d_box_0 - d_sph_0;
-        clr_blend = clamp(clr_blend + clr_blend * blend, 0.0, 1.0);
-        vec3 color = mix(vec3(0.9, 0.2, 0.2), vec3(0.2, 0.2, 0.2), clr_blend);
+        vec3 color = d_box_0 < d_sph_0 ? vec3(0.9, 0.2, 0.2) : vec3(0.2, 0.2, 0.9);
         material.color = color;
     }
 
@@ -114,7 +113,7 @@ vec3 normalat(vec3 p)
 void main()
 {
     vec2 uv = vs_pos * 0.5 + 0.5;
-    vec3 RGB = vec3(0.12 - uv.y * 0.04);
+    vec3 RGB = vec3(0.12 - uv.y * 0.08);
 
     vec3 org = vec3(-3.5, 1.5, -6.5);
     vec3 focus = vec3(0.0, 0.0, 0.0);
