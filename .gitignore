@@ -1,8 +1,9 @@
-*/*.mp4
-*/*.gif
-*/*.png
-*/*.jpg
-*/*.uasset
+*.mp4
+*.gif
+*.png
+*.jpg
+*.uasset
+*.lock
 
 *.mp4
 *.gif
@@ -18,8 +19,5 @@
 *.tlog
 *.pdb
 *.ilk
-
 *.vs
-
-*/Pipfile
-*/*.lock
+Pipfile
