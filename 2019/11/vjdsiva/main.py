@@ -4,7 +4,6 @@ import moderngl as mg
 import glfw
 
 from glm import *
-import numpy as np
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
