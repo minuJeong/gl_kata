@@ -37,6 +37,21 @@ class Client(object):
     def on_modified(self, e):
         self.shader_should_compile = True
 
+    def uniform(self, p, n, v):
+        if n not in p:
+            return
+
+        if isinstance(v, (vec2, vec3, vec4)):
+            p[n].write(bytes(v))
+        elif isinstance(v, (ivec2, ivec3, ivec4)):
+            p[n].write(bytes(v))
+        elif isinstance(v, (uvec2, uvec3, uvec4)):
+            p[n].write(bytes(v))
+        elif isinstance(v, (mat2, mat3, mat4)):
+            p[n].write(bytes(v))
+        else:
+            p[n].value = v
+
     def compile(self):
         self.shader_should_compile = False
 
@@ -58,6 +73,14 @@ class Client(object):
             vb, ib = gl.buffer(vbdata), gl.buffer(ibdata)
             self.vao = gl.vertex_array(self.p_render, [(vb, "2f", "in_pos")], ib, skip_errors=True)
 
+            vsize = self.volume_res.x * self.volume_res.y * self.volume_res.z
+            vsize *= 4 * 4
+            self.truchet_volume = gl.buffer(reserve=vsize)
+            self.truchet_volume.bind_to_storage_buffer(14)
+
+            self.uniform(self.cs_truchet, "u_volume_res", self.volume_res)
+            self.uniform(self.p_render, "u_volume_res", self.volume_res)
+
             print("compiled")
 
         except Exception as e:
@@ -66,6 +89,10 @@ class Client(object):
     def update(self):
         if self.shader_should_compile:
             self.compile()
+
+        t = glfw.get_time()
+        self.uniform(self.cs_truchet, "u_time", t)
+        self.uniform(self.p_render, "u_time", t)
 
         self.cs_truchet.run(*self.compute_group_res)
         self.vao.render()
