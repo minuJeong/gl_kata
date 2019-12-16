@@ -49,13 +49,13 @@ class UValue(object):
 
 class QRenderWidget(QtWidgets.QOpenGLWidget):
     def initializeGL(self):
-        self.setMinimumSize(512, 512)
-        self.setMaximumSize(512, 512)
-        self.setCursor(Qt.BlankCursor)
+        self.width, self.height = 1920, 1080
+        self.setMinimumSize(self.width, self.height)
+        self.setMaximumSize(self.width, self.height)
 
         self.gl = mg.create_context()
 
-        self.u_camerapos = UValue([], "", vec3(0.0, 2.0, -5.0))
+        self.u_camerapos = UValue([], "", vec3(0.0, 2.0, 5.0))
         self.compile()
 
         def on_modified(e):
@@ -82,6 +82,7 @@ class QRenderWidget(QtWidgets.QOpenGLWidget):
 
             self.u_time = UValue([program], "u_time", 0.0)
             self.u_camerapos = UValue([program], "u_camerapos", self.u_camerapos.uvalue)
+            self.u_aspect = UValue([program], "u_aspect", self.width / self.height)
 
             self.mousepos = vec2(0.0)
 

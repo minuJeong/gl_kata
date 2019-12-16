@@ -8,6 +8,7 @@ out vec4 fs_colour;
 
 uniform vec3 u_camerapos;
 uniform float u_time;
+uniform float u_aspect;
 
 const vec3 UP = vec3(0.0, 1.0, 0.0);
 
@@ -17,8 +18,14 @@ struct Marching
     float T;
     vec3 P;
     vec3 base_color;
-    vec3 spec;
+    float roughness;
+    vec3 spec_color;
 };
+
+float sdf_floor(vec3 p, vec3 n)
+{
+    return dot(p, n);
+}
 
 float sdf_sphere(vec3 p, float r)
 {
@@ -42,20 +49,44 @@ float op_union_round(float a, float b, float t)
 float sdf_world(vec3 p, inout Marching m)
 {
     m.base_color = vec3(0.7, 0.8, 0.6);
-    m.spec = vec3(1.0);
+    m.roughness = 1.0;
+    m.spec_color = vec3(1.0);
 
-    float dist;
+    float dist = sdf_floor(p - vec3(0.0, -1.0, 0.0), UP);
 
     // sphere
     {
-        float d = sdf_sphere(p - vec3(-1.0, cos(u_time * 4.0), -sin(u_time * 4.0)), 1.0);
-        dist = d;
+        float d = sdf_sphere(p - vec3(-1.0, cos(u_time * 4.0), -sin(u_time * 4.0) + 1.0), 1.0);
+
+        m.base_color = mix(m.base_color, vec3(0.2, 0.4, 0.6), clamp((dist - d) * 0.25, 0.0, 1.0));
+        if (d < NEAR)
+        {
+            m.roughness = 1.0;
+        }
+
+        dist = op_union_round(dist, d, 1.0);
     }
 
     // box
     {
-        float d = sdf_box(p - vec3(+1.0, 0.0, 0.0), vec3(0.8)) - 0.2;
-        dist = op_union_round(dist, d, 0.5);
+        float boxsize = 0.95 * (cos(u_time * 2.4) * 0.2 + 0.8);
+        float d = sdf_box(p - vec3(+1.0, 0.0, 0.0), vec3(boxsize)) - 0.05;
+
+        m.base_color = mix(m.base_color, vec3(1.2, 0.3, 0.2), clamp((dist - d) * 0.25, 0.0, 1.0));
+        if (d < NEAR)
+        {
+            m.roughness = 0.0;
+        }
+
+        dist = op_union_round(dist, d, 1.0);
+    }
+
+    // box 2
+    {
+        float boxsize = 0.8;
+        float d = sdf_box(p - vec3(0.0, 0.2, -1.0), vec3(boxsize)) - 0.2;
+
+        dist = max(dist, -d);
     }
 
     return dist;
@@ -98,6 +129,7 @@ vec3 normalat(vec3 p)
 void main()
 {
     vec2 uv = vs_pos.xy;
+    uv.x *= u_aspect;
 
     vec3 org = u_camerapos;
     float c, s;
@@ -116,25 +148,28 @@ void main()
     {
         vec3 P = M.P;
         vec3 N = normalat(P);
-        vec3 L = normalize(light_pos - P);\
+        vec3 L = normalize(light_pos - P);
         vec3 V = -ray;
         vec3 H = normalize(V + L);
 
         float spec = dot(N, H);
         spec = max(spec, 0.0);
-        spec = pow(spec, 256.0);
+
+        float spec_exp = 64.0;
+        spec = pow(spec, spec_exp);
 
         float fresnel = 1.0 - dot(N, V);
         fresnel = max(fresnel, 0.0);
         fresnel = pow(fresnel, 5.0);
         spec += fresnel * 0.3;
 
-        float diffuse = (1.0 - spec) * dot(N, L);
+        float diffuse = dot(N, L);
+        diffuse += max(dot(N, -UP), 0.0) * 1.5;
         diffuse = max(diffuse, 0.0);
 
-        float ambient = 1.0 - diffuse - spec;
+        float ambient = 1.0 - diffuse;
 
-        vec3 light = spec * M.spec + diffuse * M.base_color + ambient * vec3(0.1, 0.1, 0.2);
+        vec3 light = spec * M.spec_color + diffuse * M.base_color + ambient * vec3(0.1, 0.1, 0.2);
 
         RGB = light;
     }
