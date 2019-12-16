@@ -7,6 +7,8 @@ from glm import *
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 
 def read_shader(path):
@@ -26,37 +28,59 @@ class Client(QtWidgets.QOpenGLWidget):
 
     def initializeGL(self):
         self.gl = mg.create_context()
+        self.compile()
 
-        vs, fs = read_shader("./gl/quad.vs"), read_shader("./gl/quad.fs")
-        self.program = self.gl.program(vertex_shader=vs, fragment_shader=fs)
-        self.vertices = self.gl.buffer(
-            np.array(
-                [
-                    [-1.0, -1.0, 0.0, 1.0],
-                    [-1.0, +1.0, 0.0, 1.0],
-                    [+1.0, -1.0, 0.0, 1.0],
-                    [+1.0, +1.0, 0.0, 1.0],
-                ],
-                dtype=np.float32,
-            ).tobytes()
-        )
-        self.indices = self.gl.buffer(
-            np.array([0, 1, 2, 2, 1, 3], dtype=np.int32).tobytes()
-        )
-        content = [(self.vertices, "4f", "in_pos")]
-        self.vao = self.gl.vertex_array(self.program, content, self.indices)
+        def on_modified(e):
+            self.should_compile = True
 
-        self.constbuffer = self.gl.buffer(reserve=8)
-        self.constbuffer.bind_to_storage_buffer(14)
+        handler = FileSystemEventHandler()
+        handler.on_modified = on_modified
+        ob = Observer()
+        ob.schedule(handler, "./gl/", True)
+        ob.start()
 
-        w, h = self.width(), self.height()
-        self.gl.viewport = (0, 0, w, h)
-        self.constbuffer.write(struct.pack("f", w / h), offset=0)
+    def compile(self):
+        self.should_compile = False
+
+        try:
+            vs, fs = read_shader("./gl/quad.vs"), read_shader("./gl/quad.fs")
+            self.program = self.gl.program(vertex_shader=vs, fragment_shader=fs)
+            self.vertices = self.gl.buffer(
+                np.array(
+                    [
+                        [-1.0, -1.0, 0.0, 1.0],
+                        [-1.0, +1.0, 0.0, 1.0],
+                        [+1.0, -1.0, 0.0, 1.0],
+                        [+1.0, +1.0, 0.0, 1.0],
+                    ],
+                    dtype=np.float32,
+                ).tobytes()
+            )
+            self.indices = self.gl.buffer(
+                np.array([0, 1, 2, 2, 1, 3], dtype=np.int32).tobytes()
+            )
+            content = [(self.vertices, "4f", "in_pos")]
+            self.vao = self.gl.vertex_array(self.program, content, self.indices)
+
+            self.constbuffer = self.gl.buffer(reserve=8)
+            self.constbuffer.bind_to_storage_buffer(14)
+
+            w, h = self.width(), self.height()
+            self.gl.viewport = (0, 0, w, h)
+            self.constbuffer.write(struct.pack("f", w / h), offset=0)
+
+            print("compile finished")
+
+        except Exception as e:
+            print(e)
 
     def render(self):
         self.vao.render()
 
     def paintGL(self):
+        if self.should_compile:
+            self.compile()
+
         t = time.time() % 10000.0
         self.constbuffer.write(struct.pack("f", t), offset=4)
 
