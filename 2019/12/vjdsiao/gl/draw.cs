@@ -40,7 +40,7 @@ void main()
     if (u_is_draw)
     {
         float dist = sdf2d_line(xy, u_mousepos, u_prevmousepos);
-        RGB.x += smoothstep(8.1, 8.0, dist);
+        RGB.x += smoothstep(5.1, 5.0, dist);
         RGB.z = 0.5;
     }
     else
