@@ -2,7 +2,7 @@
 
 layout(local_size_x=8, local_size_y=4) in;
 
-struct Vertex
+struct Particle
 {
     vec4 in_pos;
     vec4 in_uv;
@@ -11,7 +11,7 @@ struct Vertex
 
 layout(binding=0) buffer vbo
 {
-    Vertex vertices[];
+    Particle vertices[];
 };
 
 uniform float u_time;
@@ -39,7 +39,8 @@ float random(vec2 uv)
 
 void main()
 {
-    uint quad_id = gl_LocalInvocationID.x * gl_NumWorkGroups.x;
+    uint num_quads = gl_NumWorkGroups.x;
+    uint quad_id = gl_LocalInvocationID.x;
     uint vertex_id = gl_LocalInvocationID.y;
 
     uint dst_i = quad_id * 4 + vertex_id;
@@ -47,20 +48,23 @@ void main()
 
     vec4 pos = initial_pos[src_i];
     pos.xy *= 0.1;
-    pos.x += float(quad_id) * 0.3 - 0.9;
+
+    pos.x += float(quad_id) * 0.4 - 0.7;
+
+    float jump = float(quad_id) + u_time * 4.0;
+    jump = cos(jump) * 0.5 + 0.5;
+    jump = pow(jump + 0.1, 16.0);
+    jump *= 0.06;
+    jump -= 0.12;
+    pos.y += jump;
 
     vertices[dst_i].in_pos = pos;
 
     vec4 uv = initial_uv[src_i];
     vertices[dst_i].in_uv = uv;
 
-    vec3 RGB = vec3(0.1, 0.2, 0.3);
+    vec3 RGB = vec3(1.44, 0.11, 0.98);
     vertices[dst_i].in_color = vec4(RGB, 1.0);
-
-    if (vertex_id == 0)
-    {
-        vertices[dst_i].in_color.x = 1.0;
-    }
 
     vertices[dst_i].in_color.w = 1.0;
 }

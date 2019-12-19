@@ -33,7 +33,7 @@ class Client(object):
         self.should_compile = False
 
         try:
-            NUM_QUAD = 10
+            NUM_QUAD = 5
 
             VS, FS = read("./gl/quad.vs"), read("./gl/quad.fs")
             program = self.gl.program(vertex_shader=VS, fragment_shader=FS)
@@ -45,11 +45,10 @@ class Client(object):
                 ofs = i * 4
                 indices.extend([0 + ofs, 1 + ofs, 2 + ofs, 2 + ofs, 1 + ofs, 3 + ofs])
 
-            ib = self.gl.buffer(np.array(indices, dtype=np.int32))
-            self.vao = self.gl.vertex_array(
+            self.particles = self.gl.vertex_array(
                 program,
                 [(vb, "4f 4f 4f", "in_pos", "in_uv", "in_color")],
-                ib,
+                self.gl.buffer(np.array(indices, dtype=np.int32)),
                 skip_errors=True,
             )
 
@@ -57,9 +56,26 @@ class Client(object):
             self.cs = self.gl.compute_shader(CS)
             self.group = NUM_QUAD, 1
 
+            VS, FS = read("./gl/screen.vs"), read("./gl/screen.fs")
+            screen_program = self.gl.program(vertex_shader=VS, fragment_shader=FS)
+            vb = self.gl.buffer(
+                np.array([-1, -1, 1, -1, -1, 1, 1, 1], dtype=np.float32)
+            )
+            self.screen = self.gl.vertex_array(
+                screen_program,
+                [(vb, "2f", "in_pos")],
+                self.gl.buffer(np.array([0, 1, 2, 2, 1, 3], np.int32)),
+            )
+
             u_aspect = self.width / self.height
             self.uniform(program, "u_aspect", u_aspect)
+            self.uniform(screen_program, "u_aspect", u_aspect)
             self.uniform(self.cs, "u_aspect", u_aspect)
+
+            self.gbuf_basecolor = self.gl.texture((self.width, self.height), 4)
+            self.gbuffer = self.gl.framebuffer([self.gbuf_basecolor])
+
+            self.uniform(screen_program, "u_gbuffer_basecolor", 0)
 
             print("done")
 
@@ -82,19 +98,27 @@ class Client(object):
             return
 
         self.gl.clear()
+        self.gbuffer.clear()
 
         u_time = glfw.get_time()
-        self.uniform(self.vao.program, "u_time", u_time)
         self.uniform(self.cs, "u_time", u_time)
+        self.uniform(self.particles.program, "u_time", u_time)
+        self.uniform(self.screen.program, "u_time", u_time)
 
         self.cs.run(*self.group)
-        self.vao.render()
+
+        self.gbuffer.use()
+        self.particles.render()
+
+        self.gl.screen.use()
+        self.gbuf_basecolor.use(0)
+        self.screen.render()
 
 
 def main():
     glfw.init()
     glfw.window_hint(glfw.FLOATING, glfw.TRUE)
-    window = glfw.create_window(1920, 1080, "", None, None)
+    window = glfw.create_window(1920, 1080, "_", None, None)
     glfw.make_context_current(window)
     client = Client(window)
     while not glfw.window_should_close(window):

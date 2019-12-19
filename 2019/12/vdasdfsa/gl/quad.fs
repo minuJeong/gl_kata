@@ -13,7 +13,8 @@ float vmax(vec4 xy) { return max(max(xy.x, xy.y), max(xy.z, xy.w)); }
 
 float sdf_rect(vec2 uv, vec2 b)
 {
-    return vmax(abs(uv) - b);
+    vec2 d = abs(uv) - b;
+    return length(max(d, 0.0));
 }
 
 void main()
@@ -21,12 +22,15 @@ void main()
     vec2 uv = vs_uv.xy;
 
     float c, s;
-    c = cos(u_time);
-    s = sin(u_time);
+    c = cos(u_time * 3.14);
+    s = sin(u_time * 3.14);
     uv = mat2(c, -s, s, c) * (uv - 0.5);
-    float d_rect = sdf_rect(uv, vec2(0.3));
+
+    float d_rect = sdf_rect(uv, vec2(0.15)) - 0.15;
+    d_rect = abs(d_rect) - 0.04;
+
     float x = smoothstep(0.01, -0.01, d_rect);
 
-    vec3 RGB = vs_color.xyz * (x + 0.1);
+    vec3 RGB = vs_color.xyz * x;
     fs_color = vec4(RGB, 1.0);
 }
