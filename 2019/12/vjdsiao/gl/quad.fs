@@ -53,7 +53,7 @@ float op_union_round(float a, float b, float t)
 float sdf_world(vec3 p, inout Material material)
 {
     float floor_height;
-    uvec2 xy = uvec2(p.xz * 24.0 + u_res.x * 0.5);
+    uvec2 xy = uvec2(p.xz * 24.0 + float(u_res.x) * 0.5);
     if (xy.x > 0 && xy.x < u_res.x - 1 &&
         xy.y > 0 && xy.y < u_res.y - 1)
     {
