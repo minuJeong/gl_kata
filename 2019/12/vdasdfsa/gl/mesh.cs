@@ -47,7 +47,7 @@ void main()
     uint src_i = uint(mod(dst_i, 4));
 
     vec4 pos = initial_pos[src_i];
-    pos.xy *= 0.1;
+    pos.xy *= 0.15;
 
     pos.x += float(quad_id) * 0.4 - 0.7;
 
@@ -63,8 +63,7 @@ void main()
     vec4 uv = initial_uv[src_i];
     vertices[dst_i].in_uv = uv;
 
-    vec3 RGB = vec3(1.74, 0.11, 0.98);
+    vec3 RGB = vec3(44.74, 0.77, 2.43);
     vertices[dst_i].in_color = vec4(RGB, 1.0);
-
     vertices[dst_i].in_color.w = 1.0;
 }

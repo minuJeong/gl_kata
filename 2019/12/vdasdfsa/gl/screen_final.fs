@@ -16,7 +16,5 @@ void main()
     vec4 texcolor_brightcolor = texture(u_bloomtex, uv);
 
     vec3 RGB = texcolor_basecolor.xyz + texcolor_brightcolor.xyz;
-
-    RGB = texture(u_bloomtex, uv).xyz;
     fs_color = vec4(RGB, 1.0);
 }

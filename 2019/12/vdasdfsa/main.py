@@ -64,7 +64,18 @@ class Client(object):
             # compute shader
             CS = read("./gl/mesh.cs")
             self.cs = self.gl.compute_shader(CS)
+
+            # generate vb/ib
+            screen_vb = self.gl.buffer(
+                np.array([-1, -1, 1, -1, -1, 1, 1, 1], dtype=np.float32)
+            )
+            screen_ib = self.gl.buffer(np.array([0, 1, 2, 2, 1, 3], np.int32))
             self.group = NUM_QUAD, 1
+
+            # background quad
+            VS, FS = read("./gl/screen.vs"), read("./gl/background.fs")
+            bgprogram = self.gl.program(vertex_shader=VS, fragment_shader=FS)
+            self.bgvao = self.gl.vertex_array(bgprogram, [(screen_vb, "2f", "in_pos")], screen_ib)
 
             # particle vao
             VS, FS = read("./gl/quad.vs"), read("./gl/quad.fs")
@@ -80,13 +91,7 @@ class Client(object):
                 skip_errors=True,
             )
 
-            # generate vb/ib
-            screen_vb = self.gl.buffer(
-                np.array([-1, -1, 1, -1, -1, 1, 1, 1], dtype=np.float32)
-            )
-            screen_ib = self.gl.buffer(np.array([0, 1, 2, 2, 1, 3], np.int32))
-
-            # compile screen vertex arrays
+            # screen shaders
             VS, FS = read("./gl/screen.vs"), read("./gl/screen_bloomblur.fs")
             screen_bloomblur_program = self.gl.program(
                 vertex_shader=VS, fragment_shader=FS
@@ -94,7 +99,7 @@ class Client(object):
             VS, FS = read("./gl/screen.vs"), read("./gl/screen_final.fs")
             screen_final_program = self.gl.program(vertex_shader=VS, fragment_shader=FS)
 
-            # vetex arrays
+            # screen vetex arrays
             self.screen_bloomblur = self.gl.vertex_array(
                 screen_bloomblur_program, [(screen_vb, "2f", "in_pos")], screen_ib
             )
@@ -103,17 +108,15 @@ class Client(object):
             )
 
             # gbuffer
-            self.gbuf_basecolor = self.gl.texture((self.width, self.height), 4)
-            self.gbuf_brightcolor = self.gl.texture((self.width, self.height), 4)
-            self.gbuffer = self.gl.framebuffer(
-                [self.gbuf_basecolor, self.gbuf_brightcolor]
-            )
+            self.gbuf_basecolor = self.gl.texture((self.width, self.height), 4, dtype="f4")
+            self.gbuf_basecolor.repeat_x = False
+            self.gbuf_basecolor.repeat_y = False
+
+            self.gbuffer = self.gl.framebuffer([self.gbuf_basecolor])
 
             # bloom buffer
-            self.bloomtexhor = self.gl.texture((self.width, self.height), 4)
-            self.bloomtex = self.gl.texture((self.width, self.height), 4)
-            self.pprenderbuffer_0 = self.gl.framebuffer([self.bloomtexhor])
-            self.pprenderbuffer_1 = self.gl.framebuffer([self.bloomtex])
+            self.bloomtex = self.gl.texture((self.width, self.height), 4, dtype="f4")
+            self.postprocessframe = self.gl.framebuffer([self.bloomtex])
 
             # uniforms
             u_aspect = self.width / self.height
@@ -149,33 +152,26 @@ class Client(object):
     def push_utime(self):
         u_time = glfw.get_time()
         self.uniform(self.cs, "u_time", u_time)
+        self.uniform(self.bgvao.program, "u_time", u_time)
         self.uniform(self.particles.program, "u_time", u_time)
         self.uniform(self.screen_final.program, "u_time", u_time)
 
     def advance_particles(self):
         self.cs.run(*self.group)
 
+    def render_background(self):
+        self.bgvao.render()
+
     def render_particles(self):
-        self.gbuffer.use()
         self.particles.render()
 
     def bloom(self):
-        # gbuffer_brightcolor -> bloombuffer_hor
-        self.gbuf_brightcolor.use(2)
-        self.pprenderbuffer_0.use()
-        self.uniform(self.screen_bloomblur.program, "u_is_hor", True)
-        self.screen_bloomblur.render()
-
-        # bloombuffer_hor -> bloombuffer
-        self.bloomtexhor.use(2)
-        self.pprenderbuffer_1.use()
-        self.uniform(self.screen_bloomblur.program, "u_is_hor", False)
+        self.gbuf_basecolor.use(0)
         self.screen_bloomblur.render()
 
     def finalrender(self):
         self.gbuf_basecolor.use(0)
         self.bloomtex.use(1)
-        self.gl.screen.use()
         self.screen_final.render()
 
     def update(self):
@@ -186,15 +182,24 @@ class Client(object):
         self.clear()
         self.push_utime()
         self.advance_particles()
+
+        self.gbuffer.use()
+        self.render_background()
+
+        self.gl.enable(mg.BLEND)
         self.render_particles()
+
+        self.postprocessframe.use()
         self.bloom()
+
+        self.gl.screen.use()
         self.finalrender()
 
 
 def main():
     glfw.init()
     glfw.window_hint(glfw.FLOATING, glfw.TRUE)
-    window = glfw.create_window(1920 // 2, 1280 // 2, "_", None, None)
+    window = glfw.create_window(1920, 1280, "'-^/", None, None)
     glfw.make_context_current(window)
     client = Client(window)
     while not glfw.window_should_close(window):
