@@ -14,6 +14,7 @@ layout(binding=1) buffer b_screen_draw
 uniform float u_time;
 uniform vec3 u_slider_pos;
 uniform uvec2 u_res;
+uniform bool u_is_draw;
 
 struct Material
 {
@@ -52,21 +53,21 @@ float op_union_round(float a, float b, float t)
 float sdf_world(vec3 p, inout Material material)
 {
     float floor_height;
-    uvec2 xy = uvec2(p.xz * 24.0 + u_res.x * 0.5);
+    uvec2 xy = uvec2(p.xz * 24.0 + float(u_res.x) * 0.5);
     if (xy.x > 0 && xy.x < u_res.x - 1 &&
         xy.y > 0 && xy.y < u_res.y - 1)
     {
         uint i = xy.x + xy.y * u_res.x;
         vec3 buf_value = b_draw_rgb[i].xyz;
         material.base_color = buf_value;
-        floor_height = buf_value.x * 3.0 - 1.5;
+        floor_height = buf_value.x * 2.0 - 2.0;
     }
     else
     {
         material.base_color = vec3(0.2, 0.2, 0.4);
     }
 
-    float distance = sdf_plane(p - vec3(0.0, -1.5, 0.0), UP, 0.0);
+    float distance = sdf_plane(p - vec3(0.0, -12.0 + u_slider_pos.z * 24.0, 0.0), UP, 0.0);
 
     {
         vec3 q = p;
@@ -139,7 +140,7 @@ void main()
     vec3 org = vec3(0.0);
     org.y = 4.0 * u_slider_pos.y * 24.0;
     org.x = 2.0 + u_slider_pos.x * 24.0;
-    org.z = 8.0 + u_slider_pos.z * 24.0;
+    org.z = 8.0 + u_slider_pos.x * 24.0;
 
     vec3 ray = lookzero(org) * normalize(vec3(uv, 1.0));
 
@@ -168,6 +169,15 @@ void main()
         vec3 light = diffuse_light + ambient_light;
 
         RGB = light;
+    }
+
+    if (u_is_draw)
+    {
+        uv.y = - uv.y;
+        uvec2 xy = uvec2(uv * 256 + 256);
+        uint i = xy.x + xy.y * u_res.x;
+        vec3 buf_value = b_draw_rgb[i].xyz;
+        RGB.x = buf_value.x;
     }
 
     RGB = clamp(RGB, 0.0, 1.0);
