@@ -63,7 +63,7 @@ void main()
     vec4 uv = initial_uv[src_i];
     vertices[dst_i].in_uv = uv;
 
-    vec3 RGB = vec3(1.44, 0.11, 0.98);
+    vec3 RGB = vec3(1.74, 0.11, 0.98);
     vertices[dst_i].in_color = vec4(RGB, 1.0);
 
     vertices[dst_i].in_color.w = 1.0;

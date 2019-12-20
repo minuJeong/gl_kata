@@ -3,7 +3,9 @@
 layout(location=0) in vec4 vs_pos;
 layout(location=1) in vec4 vs_uv;
 layout(location=2) in vec4 vs_color;
-out vec4 fs_color;
+
+layout(location=0) out vec4 fs_basecolor;
+layout(location=1) out vec4 fs_brightcolor;
 
 uniform float u_time;
 
@@ -32,5 +34,8 @@ void main()
     float x = smoothstep(0.01, -0.01, d_rect);
 
     vec3 RGB = vs_color.xyz * x;
-    fs_color = vec4(RGB, 1.0);
+    fs_basecolor = vec4(RGB, x);
+
+    bool isbright = dot(RGB, vec3(0.2126, 0.7152, 0.0722)) > 1.0;
+    fs_brightcolor = isbright ? vec4(RGB, x) : vec4(0.0, 0.0, 0.0, 0.0);
 }
