@@ -1,0 +1,35 @@
+#version 460
+
+layout(local_size_x=64) in;
+
+struct Particle
+{
+    vec3 pos;
+    vec3 speed;
+    float scale;
+    vec3 color;
+};
+
+layout(std430, binding=0) buffer particlesbuffer
+{
+    Particle particles[];
+};
+
+
+float random(vec2 uv)
+{
+    highp float x = dot(uv, vec2(12.4321, 45.4568));
+    return fract(cos(x) * 43215.613543);
+}
+
+void main()
+{
+    uint particle_id = gl_LocalInvocationID.x + gl_WorkGroupID.x * gl_WorkGroupSize.x;
+    vec2 uv = vec2(gl_LocalInvocationID.x, gl_WorkGroupID.x);
+
+    Particle p;
+    p.pos = vec3(0.0);
+    p.pos.x = random(uv);
+
+    particles[particle_id] = p;
+}
