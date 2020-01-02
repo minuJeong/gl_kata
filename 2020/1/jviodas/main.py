@@ -1,3 +1,4 @@
+import ctypes as c
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -10,7 +11,7 @@ def read(path):
         return f.read()
 
 
-class GL():
+class GL:
     def __init__(self):
         super(GL, self).__init__()
 
@@ -30,17 +31,27 @@ class RenderWidget(QtWidgets.QOpenGLWidget):
         print(f"GL Version: {version}, GLSL Version: {sl_version}")
 
         # compile shaders
-        self.program = shaders.compileProgram(
-            shaders.compileShader(read("./gl/vs.glsl"), GL_VERTEX_SHADER),
-            shaders.compileShader(read("./gl/fs.glsl"), GL_FRAGMENT_SHADER)
-        )
+        vs = glCreateShader(GL_VERTEX_SHADER)
+        vs_src = read("./gl/vs.glsl")
+        glShaderSource(vs, vs_src)
+        glCompileShader(vs)
+
+        fs = glCreateShader(GL_FRAGMENT_SHADER)
+        fs_src = read("./gl/fs.glsl")
+        glShaderSource(fs, fs_src)
+        glCompileShader(fs)
+
+        self.program = glCreateProgram()
+        glAttachShader(self.program, vs)
+        glAttachShader(self.program, fs)
+        glLinkProgram(self.program)
 
         # build vertex arrays..
         self.vao = glGenVertexArrays(1)
         glBindVertexArray(self.vao)
 
         # build vertex buffer..
-        self.vertices = np.array([-1, -1, +1, -1, -1, +1, +1, +1], dtype=np.float32)
+        self.vertices = [-1, -1, +1, -1, -1, +1, +1, +1]
         self.vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
         in_pos = glGetAttribLocation(self.program, "in_pos")
@@ -48,7 +59,12 @@ class RenderWidget(QtWidgets.QOpenGLWidget):
         if in_pos > 0:
             is_binding_attrib = True
             glEnableVertexAttribArray(in_pos)
-        glBufferData(GL_ARRAY_BUFFER, len(self.vertices) * 4, self.vertices, GL_STATIC_DRAW)
+            glVertexAttribPointer(in_pos, 2, GL_FLOAT, GL_FALSE, 0.0, None)
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            (c.c_float * len(self.vertices))(*self.vertices),
+            GL_STATIC_DRAW,
+        )
         if is_binding_attrib:
             glDisableVertexAttribArray(in_pos)
 
@@ -56,9 +72,15 @@ class RenderWidget(QtWidgets.QOpenGLWidget):
         self.indices = np.array([0, 1, 2, 2, 1, 3], dtype=np.int32)
         self.ibo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.ibo)
-        glBufferData(GL_ARRAY_BUFFER, len(self.indices) * 4, self.indices, GL_STATIC_DRAW)
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            (c.c_int32 * len(self.indices))(*self.indices),
+            GL_STATIC_DRAW,
+        )
 
-        # release buffers (important!)
+        # release (important!)
+        glDeleteShader(vs)
+        glDeleteShader(fs)
         glBindVertexArray(0)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
