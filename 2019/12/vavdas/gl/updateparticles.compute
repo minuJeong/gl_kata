@@ -1,0 +1,29 @@
+#version 460
+
+layout(local_size_x=64) in;
+
+struct Particle
+{
+    vec3 pos;
+    vec3 speed;
+    float scale;
+    vec3 color;
+};
+
+layout(std430, binding=0) buffer particlesbuffer
+{
+    Particle particles[];
+};
+
+uniform float u_deltatime;
+
+
+void main()
+{
+    uint particle_id = gl_LocalInvocationID.x + gl_WorkGroupID.x * gl_WorkGroupSize.x;
+
+    Particle p = particles[particle_id];
+    p.pos += p.speed * u_deltatime;
+
+    particles[particle_id] = p;
+}

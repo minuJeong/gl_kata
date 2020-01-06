@@ -1,0 +1,81 @@
+#version 460
+
+layout(local_size_x=64) in;
+
+struct Particle
+{
+    vec3 pos;
+    vec3 speed;
+    float scale;
+    vec3 color;
+};
+
+layout(std430, binding=0) buffer particlesbuffer
+{
+    Particle particles[];
+};
+
+struct Vertex
+{
+    vec4 pos;
+    vec4 texcoord0;
+};
+
+layout(binding=1) buffer vbo
+{
+    Vertex vertices[];
+};
+
+layout(binding=2) buffer ibo
+{
+    int indices[];
+};
+
+void main()
+{
+    const float QUAD_SIZE = 0.02;
+
+    uint particle_id = gl_LocalInvocationID.x + gl_WorkGroupID.x * gl_WorkGroupSize.x;
+
+    uint vertex_id_v0 = particle_id * 4 + 0;
+    uint vertex_id_v1 = particle_id * 4 + 1;
+    uint vertex_id_v2 = particle_id * 4 + 2;
+    uint vertex_id_v3 = particle_id * 4 + 3;
+
+    uint indiex_id_i0 = particle_id * 6 + 0;
+    uint indiex_id_i1 = particle_id * 6 + 1;
+    uint indiex_id_i2 = particle_id * 6 + 2;
+    uint indiex_id_i3 = particle_id * 6 + 3;
+    uint indiex_id_i4 = particle_id * 6 + 4;
+    uint indiex_id_i5 = particle_id * 6 + 5;
+
+    Particle p = particles[particle_id];
+
+    Vertex v0;
+    v0.texcoord0 = vec4(-1.0, -1.0, 0.0, 1.0);
+    v0.pos = vec4(p.pos, 1.0) + vec4(v0.texcoord0.xy, 0.0, 0.0) * QUAD_SIZE;
+
+    Vertex v1;
+    v1.texcoord0 = vec4(-1.0, +1.0, 0.0, 1.0);
+    v1.pos = vec4(p.pos, 1.0) + vec4(v1.texcoord0.xy, 0.0, 0.0) * QUAD_SIZE;
+
+    Vertex v2;
+    v2.texcoord0 = vec4(+1.0, -1.0, 0.0, 1.0);
+    v2.pos = vec4(p.pos, 1.0) + vec4(v2.texcoord0.xy, 0.0, 0.0) * QUAD_SIZE;
+
+    Vertex v3;
+    v3.texcoord0 = vec4(+1.0, +1.0, 0.0, 1.0);
+    v3.pos = vec4(p.pos, 1.0) + vec4(v3.texcoord0.xy, 0.0, 0.0) * QUAD_SIZE;
+
+    vertices[vertex_id_v0] = v0;
+    vertices[vertex_id_v1] = v1;
+    vertices[vertex_id_v2] = v2;
+    vertices[vertex_id_v3] = v3;
+
+    indices[indiex_id_i0] = int(particle_id * 4 + 0);
+    indices[indiex_id_i1] = int(particle_id * 4 + 1);
+    indices[indiex_id_i2] = int(particle_id * 4 + 2);
+    indices[indiex_id_i3] = int(particle_id * 4 + 2);
+    indices[indiex_id_i4] = int(particle_id * 4 + 1);
+    indices[indiex_id_i5] = int(particle_id * 4 + 3);
+}
