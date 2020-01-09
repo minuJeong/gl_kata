@@ -24,8 +24,10 @@ out vec4 fs_color;
 void main()
 {
     vec3 N = vs_computed_normal;
-    vec3 L = normalize(vec3(-1.0, 1.0, 1.0));
+    vec3 L = normalize(vec3(20.0, 70.0, 50.0) - ws_pos);
+
     float lambert = dot(N, L);
+    lambert = max(lambert, 0.1);
 
     fs_color = vec4(lambert, lambert, lambert, 1.0);
 }

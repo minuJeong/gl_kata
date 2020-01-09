@@ -22,8 +22,8 @@ handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
 
 # select framework
-framework = "GLFW"
-# framework = "PYQT5"
+# framework = "GLFW"
+framework = "PYQT5"
 
 
 def server_func():
@@ -50,26 +50,12 @@ def client_func():
     client = None
 
     if framework == "GLFW":
-        print("client initializing with GLFW..")
+        logger.debug("client initializing with GLFW..")
         client = ClientGLFW(width, height, logger)
 
     elif framework == "PYQT5":
-        print("client initializing with PYQT5..")
-
-        client = Client()
-        app = QtWidgets.QApplication([])
-        renderwidget = QtWidgets.QOpenGLWidget()
-        renderwidget.setMinimumSize(width, height)
-        renderwidget.setMaximumSize(width, height)
-
-        def paintGL():
-            client.paint()
-            renderwidget.update()
-
-        renderwidget.initializeGL = client.init
-        renderwidget.paintGL = paintGL
-        renderwidget.show()
-        app.exec_()
+        logger.debug("client initializing with PYQT5..")
+        client = ClientPYQT5(width, height, logger)
 
     else:
         raise Exception(f"selected framework not supported: {framework}")

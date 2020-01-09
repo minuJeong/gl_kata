@@ -59,7 +59,15 @@ void main()
     // vec3 normal_1 = get_abutting_tris_normal(vertex_id_1);
     // vec3 normal_2 = get_abutting_tris_normal(vertex_id_2);
 
-    normal[vertex_id_0] = vec4(normalize(cross(v2 - v0, v1 - v0)), 0.0);
-    normal[vertex_id_1] = vec4(normalize(cross(v2 - v1, v0 - v1)), 0.0);
-    normal[vertex_id_2] = vec4(normalize(cross(v0 - v2, v1 - v2)), 0.0);
+    vec3 cr0 = cross(v2 - v0, v1 - v0);
+    vec3 cr1 = cross(v2 - v1, v0 - v1);
+    vec3 cr2 = cross(v0 - v2, v1 - v2);
+
+    if (length(cr0) <= 0.01) { cr0.z = 1.0; }
+    if (length(cr1) <= 0.01) { cr1.z = 1.0; }
+    if (length(cr2) <= 0.01) { cr2.z = 1.0; }
+
+    normal[vertex_id_0] = mix(normal[vertex_id_0], vec4(normalize(cr0), 0.0), 0.5);
+    normal[vertex_id_1] = mix(normal[vertex_id_1], vec4(normalize(cr1), 0.0), 0.5);
+    normal[vertex_id_2] = mix(normal[vertex_id_2], vec4(normalize(cr2), 0.0), 0.5);
 }

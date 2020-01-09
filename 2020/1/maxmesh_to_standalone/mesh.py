@@ -7,6 +7,8 @@ from loader import Loader
 
 
 class Mesh(object):
+    programs_cache = {}
+
     def __init__(self, transform=None):
         super(Mesh, self).__init__()
         self.transform = transform or mat4(1.0)
@@ -30,10 +32,21 @@ class Mesh(object):
 
         assert vertex_shader and fragment_shader, self
 
-        self.program = gl.program(
-            vertex_shader=Loader.load_shader(vertex_shader),
-            fragment_shader=Loader.load_shader(fragment_shader),
-        )
+        vssrc = Loader.load_shader(vertex_shader)
+        fssrc = Loader.load_shader(fragment_shader)
+
+        cachekey = (vssrc, fssrc)
+        if cachekey in Mesh.programs_cache:
+            self.program = Mesh.programs_cache[cachekey]
+
+        else:
+            self.program = gl.program(
+                vertex_shader=vssrc,
+                fragment_shader=fssrc,
+            )
+            Mesh.programs_cache[cachekey] = self.program
+
+        self.build_vao(gl)
 
     def compute_normal(self, gl, vbo, ibo):
         vertex_shape = vbo.shape
@@ -49,7 +62,9 @@ class Mesh(object):
         gl.buffer(vertex_bytes).bind_to_storage_buffer(4)
         gl.buffer(tris.tobytes()).bind_to_storage_buffer(5)
 
-        normal_buffer = gl.buffer(reserve=len(vertex_bytes))
+        num_verts = len(vertex_bytes) // 16  # 4 components * 4 bytes
+        normals = np.array([0.5, 0.5, 1.0, 1.0] * num_verts, dtype=np.float32)
+        normal_buffer = gl.buffer(normals)
         normal_buffer.bind_to_storage_buffer(6)
 
         self.compute = gl.compute_shader(
@@ -77,35 +92,37 @@ class Mesh(object):
         )
 
     def uniform(self, data):
-        if not self.program and not self.compute:
-            return
-
-        binary_sending_types = [mat2, mat3, mat4, vec2, vec3, vec4]
+        binary_sending_types = (mat2, mat3, mat4, vec2, vec3, vec4)
         for p in (self.program, self.compute):
             if not p:
                 continue
 
             for n, v in data.items():
-                if n in p:
-                    if _any(filter(lambda t: isinstance(v, t), binary_sending_types)):
-                        p[n].write(bytes(v))
-                    else:
-                        p[n].value = v
+                if n not in p:
+                    continue
 
-    def render(self, gl, VP=None):
+                if isinstance(v, binary_sending_types):
+                    p[n].write(bytes(v))
+                elif isinstance(v, (int, float)):
+                    p[n].value = v
+                else:
+                    raise Exception("Unsupported")
+
+    def render(self, gl, MVP=None, VP=None):
         if not self.vao:
             self.build_vao(gl)
 
-        VP = VP or mat4(1.0)
-
-        self.update()
         M = self.transform
-        MVP = VP * M
-        self.uniform({"u_M": M, "u_MVP": MVP})
+        if MVP is None:
+            VP = VP or mat4(1.0)
+            MVP = VP * M
 
+        self.uniform({"u_M": M, "u_MVP": MVP})
         self.vao.render()
+        self.update()
 
     def update(self):
+        """ override this method to perform update on your own """
         pass
 
 
@@ -121,19 +138,17 @@ class NSightMesh(Mesh):
         ibo = Loader.load_ibo(self.ibo_path)
 
         normal = self.compute_normal(gl, vbo[:, 0:4], ibo)[:, 0:3]
+        normal = np.nan_to_num(normal)
         vbo = np.hstack((vbo, normal))
         return vbo, ibo
 
-    def build_vao(self, gl, vbo=None, ibo=None):
+    def build_vao(self, gl):
         if not self.program:
             self.build_material(gl)
 
         vbo, ibo = self._load_poly(gl)
-
-        idx_nan = np.argwhere(np.isnan(vbo))
-
-        vbo = vbo if isinstance(vbo, mg.Buffer) else gl.buffer(vbo)
-        ibo = ibo if isinstance(ibo, mg.Buffer) else gl.buffer(ibo)
+        vbo = gl.buffer(vbo.tobytes())
+        ibo = gl.buffer(ibo.tobytes())
 
         self.vao = gl.vertex_array(
             self.program,
@@ -187,35 +202,3 @@ class ScreenMesh(Quad):
 
     def render(self, gl, VP=None):
         super(ScreenMesh, self).render(gl, self.VP)
-
-
-if __name__ == "__main__":
-    gl = mg.create_standalone_context()
-
-    const = gl.buffer(reserve=12)
-    const.write(bytes(vec3(512, 512, 24.0)))
-    const.bind_to_storage_buffer(24)
-
-    render_target = gl.texture((512, 512), 4)
-    fb = gl.framebuffer([render_target])
-
-    screen_mesh = ScreenMesh()
-    loaded_mesh = NSightMesh(
-        "./mesh/minotaur_head.vbo",
-        "./mesh/minotaur_head.ibo",
-        "./gl/minotaur_head/vertex.glsl",
-        "./gl/minotaur_head/fragment.glsl",
-    )
-
-    fb.use()
-
-    screen_mesh.render(gl)
-
-    V = lookAt(vec3(-25.0, 5.0, -25.0), vec3(0.0), vec3(0.0, 1.0, 0.0))
-    P = perspective(radians(24.0), 512 / 512, 0.01, 1000.0)
-    loaded_mesh.render(gl, V, P)
-
-    img = np.frombuffer(render_target.read(), dtype=np.ubyte).reshape((512, 512, 4))
-
-    import imageio as ii
-    ii.imwrite("debug_minotaur_head.png", img)
