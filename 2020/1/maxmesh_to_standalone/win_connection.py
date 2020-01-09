@@ -3,12 +3,12 @@ from ctypes import c_bool, c_int, POINTER
 from ctypes import create_unicode_buffer
 
 
-class MaxWindow(object):
-    TITLE_IDENTIFIER = "Autodesk 3ds Max"
-    CLASS_IDENTIFIER = "Qt5QWindowIcon"
+class Window(object):
+    TITLE_IDENTIFIER = None
+    CLASS_IDENTIFIER = None
 
     def __init__(self, handler, title):
-        super(MaxWindow, self).__init__()
+        super(Window, self).__init__()
 
         self.handler = handler
         self.title = title
@@ -17,12 +17,25 @@ class MaxWindow(object):
         return self.title
 
 
-class MayaWindow(object):
+class MaxWindow(Window):
+    TITLE_IDENTIFIER = "Autodesk 3ds Max"
+    CLASS_IDENTIFIER = "Qt5QWindowIcon"
+
+
+class MayaWindow(Window):
     TITLE_IDENTIFIER = "Autodesk Maya"
     CLASS_IDENTIFIER = "Qt5QWindowIcon"
 
 
-def find_windows(title_identifier, class_identifier, get_first=False):
+class HoudiniWindow(Window):
+    TITLE_IDENTIFIER = "Houdini"
+    CLASS_IDENTIFIER = "Qt5QWindowIcon"
+
+
+def find_windows(winclass: type, get_first: bool=False) -> list:
+    title_identifier = winclass.TITLE_IDENTIFIER
+    class_identifier = winclass.CLASS_IDENTIFIER
+
     windows = []
 
     # windll func: enumerate over opened windows while returning True,
@@ -40,13 +53,13 @@ def find_windows(title_identifier, class_identifier, get_first=False):
         window_text = wintex_buffer.value
 
         # compare title name
-        if title_identifier in window_text:
+        if title_identifier and title_identifier in window_text:
             class_buffer = create_unicode_buffer(255)
             windll.user32.GetClassNameW(handler, class_buffer, 255)
 
             # compare class name
-            if class_buffer.value == class_identifier:
-                windows.append(MaxWindow(handler, window_text))
+            if class_identifier and class_buffer.value == class_identifier:
+                windows.append(winclass(handler, window_text))
                 return get_first
             return True
 
@@ -56,16 +69,21 @@ def find_windows(title_identifier, class_identifier, get_first=False):
     return windows
 
 
-def find_max_windows(get_first=False):
-    return find_windows(MaxWindow.TITLE_IDENTIFIER, MaxWindow.CLASS_IDENTIFIER, get_first)
+def iterate_supported_windows(get_first=False):
+    for max_window in find_windows(MaxWindow, get_first):
+        yield max_window
+
+    for maya_window in find_windows(MayaWindow, get_first):
+        yield maya_window
+
+    for houdini_window in find_windows(HoudiniWindow, get_first):
+        yield houdini_window
 
 
-def find_maya_windows(get_first=False):
-    return find_windows(MayaWindow.TITLE_IDENTIFIER, MayaWindow.CLASS_IDENTIFIER, get_first)
+def test():
+    for supported_window in iterate_supported_windows():
+        print(supported_window, type(supported_window))
 
 
-for max_window in find_max_windows():
-    print("max window", max_window)
-
-for maya_window in find_maya_windows():
-    print("maya window", maya_window)
+if __name__ == "__main__":
+    test()
