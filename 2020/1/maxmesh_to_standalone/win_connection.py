@@ -5,6 +5,10 @@ from ctypes import create_unicode_buffer
 
 
 class Window(object):
+    """
+    Do not use this class directly. Instead use a subclass of this class.
+    """
+
     TITLE_IDENTIFIER = None
     CLASS_IDENTIFIER = None
 
@@ -19,16 +23,28 @@ class Window(object):
 
 
 class MaxWindow(Window):
+    """
+    Represents 3ds max window.
+    """
+
     TITLE_IDENTIFIER = "Autodesk 3ds Max"
     CLASS_IDENTIFIER = "Qt5QWindowIcon"
 
 
 class MayaWindow(Window):
+    """
+    Represents maya window.
+    """
+
     TITLE_IDENTIFIER = "Autodesk Maya"
     CLASS_IDENTIFIER = "Qt5QWindowIcon"
 
 
 class HoudiniWindow(Window):
+    """
+    Represents houdini window.
+    """
+
     TITLE_IDENTIFIER = "Houdini"
     CLASS_IDENTIFIER = "Qt5QWindowIcon"
 
@@ -108,6 +124,7 @@ def iterate_supported_windows(get_first: bool = False):
         yield houdini_window
 
 
+# test run this module
 def test():
     for supported_window in iterate_supported_windows():
         print(supported_window, type(supported_window))
