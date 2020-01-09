@@ -1,5 +1,6 @@
-from ctypes import windll, WINFUNCTYPE
-from ctypes import c_bool, c_int, POINTER
+from ctypes import windll
+from ctypes import POINTER, WINFUNCTYPE
+from ctypes import c_bool, c_int
 from ctypes import create_unicode_buffer
 
 
@@ -32,16 +33,36 @@ class HoudiniWindow(Window):
     CLASS_IDENTIFIER = "Qt5QWindowIcon"
 
 
-def find_windows(winclass: type, get_first: bool=False) -> list:
+def find_windows(winclass: type, get_first: bool = False) -> list:
+    """
+    :param winclass:
+    winclass should be a subclass of Window.
+
+    :param get_first:
+    if get_first is True, iteration stops immediately when first target window of the given class is found.
+
+    return:
+    returns list of windows
+    """
+
     title_identifier = winclass.TITLE_IDENTIFIER
     class_identifier = winclass.CLASS_IDENTIFIER
 
     windows = []
 
-    # windll func: enumerate over opened windows while returning True,
-    # when returned False, enumeration stops.
     @WINFUNCTYPE(c_bool, c_int, POINTER(c_int))
-    def enum_windows(handler, lparam):
+    def enum_windows(handler: int, lparam):
+        """
+        :param handler:
+        hanlder is an int that represents windll process handler id.
+
+        :param lparam:
+        lparam is always a null pointer here
+
+        return:
+        when returned False, enumeration stops, otherwise continues.
+        """
+
         is_visible = windll.user32.IsWindowVisible(handler)
         if not is_visible:
             return True
@@ -69,7 +90,14 @@ def find_windows(winclass: type, get_first: bool=False) -> list:
     return windows
 
 
-def iterate_supported_windows(get_first: bool=False):
+def iterate_supported_windows(get_first: bool = False):
+    """
+    iterates all feasible windows.
+
+    :param get_first:
+    if get_first is True, stops immediately when first window is found.
+    """
+
     for max_window in find_windows(MaxWindow, get_first):
         yield max_window
 
