@@ -60,7 +60,7 @@ def find_windows(winclass: type, get_first: bool=False) -> list:
             # compare class name
             if class_identifier and class_buffer.value == class_identifier:
                 windows.append(winclass(handler, window_text))
-                return get_first
+                return not get_first
             return True
 
         return True
@@ -69,7 +69,7 @@ def find_windows(winclass: type, get_first: bool=False) -> list:
     return windows
 
 
-def iterate_supported_windows(get_first=False):
+def iterate_supported_windows(get_first: bool=False):
     for max_window in find_windows(MaxWindow, get_first):
         yield max_window
 
