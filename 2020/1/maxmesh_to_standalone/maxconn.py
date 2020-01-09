@@ -17,6 +17,11 @@ class MaxWindow(object):
         return self.title
 
 
+class MayaWindow(object):
+    TITLE_IDENTIFIER = "Autodesk Maya"
+    CLASS_IDENTIFIER = "Qt5QWindowIcon"
+
+
 def find_windows(title_identifier, class_identifier, get_first=False):
     windows = []
 
@@ -52,8 +57,15 @@ def find_windows(title_identifier, class_identifier, get_first=False):
 
 
 def find_max_windows(get_first=False):
-    return find_windows(MaxWindow.TITLE_IDENTIFIER, MaxWindow.CLASS_IDENTIFIER)
+    return find_windows(MaxWindow.TITLE_IDENTIFIER, MaxWindow.CLASS_IDENTIFIER, get_first)
+
+
+def find_maya_windows(get_first=False):
+    return find_windows(MayaWindow.TITLE_IDENTIFIER, MayaWindow.CLASS_IDENTIFIER, get_first)
 
 
 for max_window in find_max_windows():
-    print(max_window)
+    print("max window", max_window)
+
+for maya_window in find_maya_windows():
+    print("maya window", maya_window)
