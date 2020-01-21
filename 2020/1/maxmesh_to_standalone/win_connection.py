@@ -106,6 +106,18 @@ def find_windows(winclass: type, get_first: bool = False) -> list:
     return windows
 
 
+def find_max_windows(get_first: bool=False):
+    return find_windows(MaxWindow, get_first)
+
+
+def find_maya_windows(get_first: bool=False):
+    return find_windows(MayaWindow, get_first)
+
+
+def find_houdini_windows(get_first: bool=False):
+    return find_windows(HoudiniWindow, get_first)
+
+
 def iterate_supported_windows(get_first: bool = False):
     """
     iterates all feasible windows.
@@ -114,13 +126,13 @@ def iterate_supported_windows(get_first: bool = False):
     if get_first is True, stops immediately when first window is found.
     """
 
-    for max_window in find_windows(MaxWindow, get_first):
+    for max_window in find_max_windows(get_first):
         yield max_window
 
-    for maya_window in find_windows(MayaWindow, get_first):
+    for maya_window in find_maya_windows(get_first):
         yield maya_window
 
-    for houdini_window in find_windows(HoudiniWindow, get_first):
+    for houdini_window in find_houdini_windows(get_first):
         yield houdini_window
 
 
