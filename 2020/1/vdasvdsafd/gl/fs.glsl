@@ -31,23 +31,50 @@ float sdf_sphere(vec3 pos, float radius)
     return length(pos) - radius;
 }
 
+float sdf_plane(vec3 pos, vec3 n, float d)
+{
+    return dot(pos, n) - d;
+}
+
+float sdf_box(vec3 pos, vec3 box)
+{
+    vec3 b = abs(pos) - box;
+    vec3 b0 = max(b, 0.0);
+    vec3 b1 = min(b, 0.0);
+    return length(b0) - max(b1.x, max(b1.y, b1.z));
+}
+
+bool isinbox(vec3 p, vec3 box)
+{
+    return sdf_box(p, box) < 0.0;
+}
+
 float sdf_world(inout March march)
 {
     vec3 pos = march.pos;
-    float d_sphere = sdf_sphere(pos, 2.0);
 
-    if (d_sphere < FAR)
+    float d_plane = sdf_plane(pos, UP, -2.0);
+    march.color = vec3(0.8, 0.3, 0.2);
+
+    float d_scene = d_plane;
     {
-        march.color = vec3(0.8, 0.3, 0.2);
+        float d_sphere = sdf_sphere(pos - vec3(-1.0, 0.0, 0.0), 1.0);
+        float d_box = sdf_box(pos - vec3(+1.0, 0.0, 0.0), vec3(0.9)) - 0.1;
+
+        march.color = mix(march.color, vec3(0.12, 0.3, 0.8), clamp(d_box - d_sphere, 0.0, 1.0));
+        march.color = mix(march.color, vec3(0.2, 0.76, 0.1), clamp(d_sphere - d_plane, 0.0, 1.0));
+
+        d_scene = min(d_box, d_sphere);
     }
 
-    return d_sphere;
+    return min(d_scene, d_plane);
 }
 
 bool raymarch(vec3 o, vec3 r, inout March march)
 {
-    float d;
-    for (int i = 0; i < 24; i++)
+    march.pos = o + r * 3.0;
+    march.travel = sdf_world(march);
+    float d, i; for (i = 0; i < 24; i++)
     {
         march.pos = o + r * march.travel;
         d = sdf_world(march);
@@ -92,19 +119,25 @@ void main()
         vec3 P = march.pos;
         vec3 N = normalat(P);
         vec3 L = normalize(vec3(-10.0, 10.0, -5.0) - P);
+        vec3 V = -ray;
 
-        float lambert = dot(N, L);
-        lambert = max(lambert, 0.0);
+        float fresnel = 1.0 - dot(N, V);
+        fresnel = pow(max(fresnel, 0.0), 3.0);
+        fresnel *= 0.1;
+        float specular = fresnel;
+        vec3 spec_color = vec3(1.0, 0.8, 0.8) * specular;
+
+        float lambert = (1.0 - specular) * dot(N, L);
+        lambert = clamp(lambert, 0.0, 1.0);
         vec3 diffuse_color = march.color * lambert;
 
         float ambient = 1.0 - lambert;
-        ambient *= 0.1;
-        ambient = clamp(ambient, 0.0, 1.0);
-        vec3 ambient_color = vec3(0.2, 0.1, 0.7) * ambient;
+        ambient *= 0.2;
+        ambient = max(ambient, 0.0);
 
-        float light = lambert + ambient;
+        vec3 ambient_color = vec3(0.4, 0.2, 0.5) * ambient;
 
-        RGB = vec3(light);
+        RGB = spec_color + diffuse_color + ambient_color;
     }
-    fs_color = vec4(RGB, 1.0);
+    fs_color = vec4(clamp(RGB, 0.0, 1.0), 1.0);
 }
