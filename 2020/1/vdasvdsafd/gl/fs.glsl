@@ -1,5 +1,6 @@
 #version 460
 
+#define STEPS 256
 #define NEAR 0.001
 #define FAR 100.0
 
@@ -70,11 +71,18 @@ float sdf_world(inout March march)
     return min(d_scene, d_plane);
 }
 
+float sdf_world(vec3 p)
+{
+    March march;
+    march.pos = p;
+    return sdf_world(march);
+}
+
 bool raymarch(vec3 o, vec3 r, inout March march)
 {
     march.pos = o + r * 3.0;
     march.travel = sdf_world(march);
-    float d, i; for (i = 0; i < 24; i++)
+    float d, i; for (i = 0; i < STEPS; i++)
     {
         march.pos = o + r * march.travel;
         d = sdf_world(march);
@@ -87,20 +95,19 @@ bool raymarch(vec3 o, vec3 r, inout March march)
 vec3 normalat(vec3 pos)
 {
     const vec2 e = vec2(NEAR, 0.0);
-
-    March march;
-    March marchx;
-    March marchy;
-    March marchz;
-    march.pos = pos;
-    marchx.pos = pos - e.xyy;
-    marchy.pos = pos - e.yxy;
-    marchz.pos = pos - e.yyx;
-    return normalize(sdf_world(march) - vec3(
-        sdf_world(marchx),
-        sdf_world(marchy),
-        sdf_world(marchz)
+    return normalize(sdf_world(pos) - vec3(
+        sdf_world(pos - e.xyy),
+        sdf_world(pos - e.yxy),
+        sdf_world(pos - e.yyx)
     ));
+}
+
+float shadowat(vec3 pos, vec3 light)
+{
+    float d = length(light - pos);
+    for (int i = 0; i < STEPS; i++)
+    {}
+    return 0.0;
 }
 
 void main()
@@ -123,7 +130,7 @@ void main()
 
         float fresnel = 1.0 - dot(N, V);
         fresnel = pow(max(fresnel, 0.0), 3.0);
-        fresnel *= 0.1;
+        fresnel *= 0.2;
         float specular = fresnel;
         vec3 spec_color = vec3(1.0, 0.8, 0.8) * specular;
 

@@ -18,9 +18,10 @@ def init(vao):
         print(e)
         return vao
 
+width, height = 512, 512
 glfw.init()
 glfw.window_hint(glfw.FLOATING, glfw.TRUE)
-win = glfw.create_window(1024, 1024, "glfw", None, None)
+win = glfw.create_window(width, height, "glfw", None, None)
 glfw.make_context_current(win)
 gl = mg.create_context()
 vao = init(None)
@@ -38,5 +39,4 @@ while not glfw.window_should_close(win):
     glfw.swap_buffers(win)
     vao.program["u_time"].value = glfw.get_time()
     vao.render()
-    if recompile:
-        vao = init(vao)
+    if recompile: vao = init(vao)
