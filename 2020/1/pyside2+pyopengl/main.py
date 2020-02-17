@@ -15,8 +15,8 @@ import numpy as np
 logging.basicConfig(format="[%(asctime)s] %(message)s")
 log = logging.getLogger("Root")
 log.setLevel(logging.DEBUG)
-handler_file = logging.FileHandler("C:/log/_log.txt")
-log.addHandler(handler_file)
+# handler_file = logging.FileHandler("C:/log/_log.txt")
+# log.addHandler(handler_file)
 
 
 def readshader(path):
@@ -113,6 +113,7 @@ class AlbericBordeleaux(Mesh):
     def __init__(self):
 
         dirname = "D:/Local/Python/gl_kata/2020/1/pyside2+pyopengl"
+        dirname = "./"
         super(AlbericBordeleaux, self).__init__(
             readshader("{}/gl/vs_ab.glsl".format(dirname)),
             readshader("{}/gl/fs_ab.glsl".format(dirname)),
