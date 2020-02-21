@@ -90,7 +90,7 @@ void main()
     origin.x = cos(u_time * rot_speed) * 10.0;
     origin.z = sin(u_time * rot_speed) * 10.0;
 
-    vec3 light_pos = vec3(-10.0, 10.0, -10.0);
+    vec3 light_pos = origin + vec3(-2.0, 0.0, 0.0);
 
     vec3 ray = lookzero(origin) * normalize(vec3(uv, 2.5));
     float t = marching(origin, ray);
@@ -108,12 +108,15 @@ void main()
 
         float fresnel = 1.0 - dot(N, H);
         fresnel = max(fresnel, 0.0);
-        fresnel = pow(fresnel, 5.0) * 0.1;
+        fresnel = pow(fresnel, 5.0) * 0.03;
 
         float lambert = dot(N, L);
         lambert = max(lambert, 0.0);
 
-        float light_atten = blinn + fresnel + lambert;
+        float ambient = 0.1;
+
+        float light_atten = blinn + fresnel + lambert + ambient;
+        light_atten = clamp(light_atten, 0.0, 1.0);
 
         RGB = vec3(light_atten);
     }

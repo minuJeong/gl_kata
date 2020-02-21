@@ -35,12 +35,31 @@ out vec4 fs_colour;
 layout(binding=0) uniform sampler2D u_basecolour_tex;
 uniform float u_time = 0.0;
 uniform float u_tex_aspect = 1.0;
-uniform float u_slider_alpha = 0.0;
-uniform float u_slider_hue = 0.0;
+uniform int u_masktype = 0;
+uniform float u_slider_alpha = 0.5;
+uniform vec4 u_colour_picker = vec4(1.0, 1.0, 1.0, 1.0);
+uniform int u_blendmode = 3;
 
-float hash11(float x) { return fract(sin(x) * 43215.653421); }
-float hash12(vec2 uv) { return hash11(dot(uv, vec2(12.4321, 66.43216))); }
+float hash11(float x) { return fract(cos(x) * 43215.653421); }
+float hash12(vec2 uv) { return hash11(dot(uv, vec2(12.4321454, 48.743216))); }
 float hash13(vec3 pos) { return hash11(dot(pos, vec3(8.4321, 12.4321, 66.43216))); }
+
+float noise12(vec2 uv)
+{
+    vec2 coord = floor(uv);
+    float a = hash12(coord + vec2(0.0, 0.0));
+    float b = hash12(coord + vec2(1.0, 0.0));
+    float c = hash12(coord + vec2(0.0, 1.0));
+    float d = hash12(coord + vec2(1.0, 1.0));
+
+    vec2 fr = fract(uv);
+    vec2 u = fr * fr * (3.0 - 2.0 * fr);
+
+    float x0 = mix(a, b, u.x);
+    float x1 = (c - a) * u.y * (1.0 - u.x);
+    float x2 = (d - b) * u.x * u.y;
+    return x0 + x1 + x2;
+}
 
 vec3 rgb_to_hsv(vec3 rgb)
 {
@@ -180,8 +199,8 @@ vec3 blend(vec3 src, vec3 dst, float alpha, uint mode)
         case BLEND_HUE:
         hsv_src = rgb_to_hsv(src);
         hsv_dst = rgb_to_hsv(dst);
-        hsv_src.x = mix(hsv_src.x, hsv_dst.x, alpha);
-        return hsv_to_rgb(hsv_src);
+        hsv_src.x = hsv_dst.x;
+        return mix(src, hsv_to_rgb(hsv_src), alpha);
 
         case BLEND_SATURATION:
         hsv_src = rgb_to_hsv(src);
@@ -206,34 +225,251 @@ vec3 blend(vec3 src, vec3 dst, float alpha, uint mode)
     return src;
 }
 
+float truchet(vec2 uv, int style)
+{
+    float c = cos(u_time * 0.1), s = sin(u_time * 0.1), linewidth = 0.15, linespread = 0.002;
+    vec2 coord;
+
+    float L0 = 0.5 - linewidth, L1 = L0 + linespread, R0 = 0.5 + linewidth, R1 = R0 - linespread;
+    
+    vec2 mir_uv;
+    switch(style)
+    {
+    case 0:
+        linewidth = 0.21;
+        L0 = 0.5 - linewidth, L1 = L0 + linespread, R0 = 0.5 + linewidth, R1 = R0 - linespread;
+
+        uv.x += u_time * 0.1;
+        uv *= 3.3;
+        coord = floor(uv);
+        uv -= coord;
+        uv.x = hash12(coord) < 0.5 ? uv.x : 1.0 - uv.x;
+
+        mir_uv = vec2(length(uv), length(1.0 - uv));
+        break;
+
+    case 1:
+        linewidth = 0.2;
+        L0 = 0.5 - linewidth, L1 = L0 + linespread, R0 = 0.5 + linewidth, R1 = R0 - linespread;
+
+        uv.x -= u_time * 0.1;
+        uv *= 4.7;
+        coord = floor(uv);
+        uv -= coord;
+        uv.x = hash12(coord) < 0.5 ? uv.x : 1.0 - uv.x;
+
+        mir_uv = vec2(uv.x + uv.y, (1.0 - uv).x + (1.0 - uv).y);
+        break;
+
+    case 2:
+        linewidth = 0.075;
+        L0 = 0.5 - linewidth, L1 = L0 + linespread, R0 = 0.5 + linewidth, R1 = R0 - linespread;
+
+        uv = mat2(s, -c, c, s) * uv;
+        uv *= 4.3;
+
+        coord = floor(uv);
+        uv -= coord;
+        uv.x = hash12(coord) < 0.5 ? uv.x : 1.0 - uv.x;
+
+        mir_uv = vec2(uv.x + uv.y, (1.0 - uv).x + (1.0 - uv).y);
+        break;
+
+    case 3:
+        uv = mat2(c, -s, s, c) * uv;
+        uv *= 2.3;
+
+        coord = floor(uv);
+        uv -= coord;
+        uv.x = hash12(coord) < 0.5 ? uv.x : 1.0 - uv.x;
+
+        mir_uv = vec2(length(uv), length(1.0 - uv));
+        break;
+
+    case 4:
+        linewidth = 0.25;
+        linespread = 0.002;
+        L0 = 0.5 - linewidth, L1 = L0 + linespread, R0 = 0.5 + linewidth, R1 = R0 - linespread;
+
+        uv *= 4.3;
+        coord = floor(uv);
+        uv -= coord;
+        uv.x = hash12(coord) < cos(u_time * 4.2) * 0.5 + 0.5 ? uv.x : 1.0 - uv.x;
+
+        mir_uv = vec2(uv.x + uv.y, (1.0 - uv).x + (1.0 - uv).y);
+        break;
+    }
+
+    float truchet;
+    truchet  = smoothstep(L0, L1, mir_uv.x) * smoothstep(R0, R1, mir_uv.x);
+    truchet += smoothstep(L0, L1, mir_uv.y) * smoothstep(R0, R1, mir_uv.y);
+
+    return truchet;
+}
+
+float fbm(vec2 uv)
+{
+    uv *= 2.2;
+    uv.x += u_time * 0.13;
+    uv.y += u_time * 0.06;
+    float x = 0.0, a = 1.0, f = 2.0;
+    for (int i = 0; i < 8; i++)
+    {
+        x += noise12(uv * f) * a;
+        a *= 0.75;
+        f *= 1.5;
+    }
+    return clamp(x * 0.5, 0.0, 1.0);
+}
+
+float stacked_fbm(vec2 uv, int style)
+{
+    float x, y, z, w;
+    float c = cos(u_time * 0.05), s = sin(u_time * 0.05);
+
+    switch(style)
+    {
+
+    // stack 2
+    case 0:
+        uv *= 0.25;
+        x = fbm(uv);
+        uv.x += x * 0.5;
+        uv.y += u_time * 0.1;
+        y = fbm(uv);
+        return clamp(fbm(uv + vec2(y, x)), 0.0, 1.0);
+
+    // stack 3
+    case 1:
+        uv *= 0.5;
+        x = fbm(uv);
+        uv.x += x * 2.5;
+        y = fbm(uv);
+        uv.x += cos(u_time * 0.1) * 0.6;
+        uv.y += y * 0.2;
+        z = fbm(uv);
+        uv.x += z * cos(u_time * 0.5);
+        uv.y += z * sin(u_time * 0.2);
+        return clamp(fbm(uv.yx), 0.0, 1.0);
+
+    // stack 4
+    case 2:
+        uv *= 0.3;
+        x = fbm(uv);
+        uv.x += x * 0.3 * cos(u_time * 0.01);
+        uv.y += x;
+        y = fbm(uv);
+        uv.y += y * 0.2 * cos(u_time * 0.02);
+        z = fbm(uv);
+        uv.x += z * 0.2;
+        w = fbm(uv);
+        uv.x += w;
+        return clamp(fbm(uv.xy), 0.0, 1.0);
+
+    case 3:
+        uv *= 0.25;
+        x = fbm(uv);
+        uv.x += x * -0.5;
+        uv.y += sin(u_time * 0.2) * 0.2;
+        y = fbm(uv);
+        uv.x += y;
+        uv.y += x + y;
+        return clamp(fbm(uv), 0.0, 1.0);
+    }
+    return fbm(uv);
+}
+
+float checker_pattern(vec2 uv)
+{
+    uv *= 4.0;
+    vec2 coord = floor(uv);
+    if (abs(mod(coord.x, 2.0) - mod(coord.y, 2.0)) < 0.1)
+    {
+        return 0.0;
+    }
+    return 1.0;
+}
 
 void main()
 {
-    vec2 tuv, uv = vs_pos.xy, coord, mir_uv;
+    vec2 tuv, uv = vs_pos.xy;
     tuv = uv * 0.5 + 0.5;
-    uv.x += u_time * 0.3;
 
     tuv.x /= u_tex_aspect;
     tuv.y = 1.0 - tuv.y;
 
-    float alpha = 1.0, linewidth = 0.15, linespread = 0.1, truchet;
+    float alpha = 1.0;
 
-    uv *= 2.3;
-    coord = floor(uv);
-    uv -= coord;
-    uv.x = hash12(coord) < 0.5 ? uv.x : 1.0 - uv.x;
+    float mask = 0.0;
+    switch(u_masktype)
+    {
 
-    float L0 = 0.5 - linewidth, L1 = L0 + linespread, R0 = 0.5 + linewidth, R1 = R0 - linespread;
-    // mir_uv = vec2(uv.x + uv.y, (1.0 - uv).x + (1.0 - uv).y);
-    mir_uv = vec2(length(uv), length(1.0 - uv));
-    truchet  = smoothstep(L0, L1, mir_uv.x) * smoothstep(R0, R1, mir_uv.x);
-    truchet += smoothstep(L0, L1, mir_uv.y) * smoothstep(R0, R1, mir_uv.y);
+    // truchet
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        mask = truchet(uv, u_masktype);
+        break;
 
-    vec3 overlay = hsv_to_rgb(vec3(u_slider_hue, 1.0, 1.0));
+    // cloudy noise
+    case 5:
+        mask = fbm(uv * 1.5 + vec2(u_time * 0.15, 0.0));
+        break;
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+        mask = stacked_fbm(uv, u_masktype - 6);
+        break;
 
+    // flat full
+    case 10:
+        mask = 1.0;
+        break;
+
+    // flat none
+    case 11:
+        mask = 0.0;
+        break;
+
+    // checker
+    case 12:
+        mask = checker_pattern(uv);
+        break;
+
+    default:
+        mask = 0.0;
+        break;
+    }
+
+    vec3 overlay = u_colour_picker.xyz;
     vec3 tex_rgb = texture(u_basecolour_tex, tuv).xyz;
-    vec3 hue_blended = blend(tex_rgb, overlay, truchet, BLEND_HUE);
-    vec3 rgb = mix(tex_rgb, hue_blended, u_slider_alpha);
+
+    int blend_mode = -1;
+    switch(u_blendmode)
+    {
+    case 0:
+    blend_mode = BLEND_NORMAL;
+    break;
+    case 1:
+    blend_mode = BLEND_MULTIPLY;
+    break;
+    case 2:
+    blend_mode = BLEND_OVERLAY;
+    break;
+    case 3:
+    blend_mode = BLEND_HUE;
+    break;
+    case 4:
+    blend_mode = BLEND_SOFT_LIGHT;
+    break;
+    }
+
+    vec3 rgb = blend(tex_rgb, overlay, mask * u_slider_alpha, blend_mode);
+    vec3 rgb2 = blend(tex_rgb, overlay, mask * u_slider_alpha, BLEND_MULTIPLY);
+    rgb = mix(rgb, rgb2, 0.5);
 
     fs_colour = vec4(rgb, alpha);
 }

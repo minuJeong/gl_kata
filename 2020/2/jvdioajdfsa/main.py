@@ -204,7 +204,7 @@ class Client(object):
 
 
 def main():
-    width, height = 500, 300
+    width, height = 800, 800
 
     glfw.init()
     glfw.window_hint(glfw.FLOATING, glfw.TRUE)
