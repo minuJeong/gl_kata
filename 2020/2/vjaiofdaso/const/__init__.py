@@ -1,0 +1,2 @@
+WIDTH, HEIGHT = 1024, 1024
+WINDOW_TITLE = "pipenv test"

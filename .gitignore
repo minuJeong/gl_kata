@@ -1,6 +1,8 @@
+*.pyc
 *.mp4
 *.gif
 *.png
+*.tga
 *.jpg
 *.uasset
 *.lock
