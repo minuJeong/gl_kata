@@ -34,39 +34,42 @@ void main()
     Vertex V;
     // 0: ---
     V.pos = vec4(-1.0, -1.0, -1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[0] = V;
 
     // 1: +--
     V.pos = vec4(+1.0, -1.0, -1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[1] = V;
 
     // 2: -+-
     V.pos = vec4(-1.0, +1.0, -1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[2] = V;
 
     // 3: ++-
     V.pos = vec4(+1.0, +1.0, -1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[3] = V;
 
     // 4: +++
     V.pos = vec4(-1.0, -1.0, +1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[4] = V;
 
+    // 5: +-+
     V.pos = vec4(+1.0, -1.0, +1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[5] = V;
 
+    // 6: -++
     V.pos = vec4(-1.0, +1.0, +1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[6] = V;
 
+    // 7: +++
     V.pos = vec4(+1.0, +1.0, +1.0, 1.0);
-    V.normal = vec4(normalize(V.pos.xyz), 1.0);
+    V.normal = normalize(V.pos);
     vertices[7] = V;
 
     Tri t;

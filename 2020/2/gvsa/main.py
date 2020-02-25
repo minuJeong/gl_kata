@@ -11,7 +11,12 @@ RIGHT = vec3(1.0, 0.0, 0.0)
 
 
 scene_def = [
-    ("./gl/mesh/mesh_builder_0.glsl", "./gl/mesh/mesh_updater_0.glsl", "./gl/vs/vs_0.glsl", "./gl/fs/fs_0.glsl"),
+    (
+        "./gl/mesh/mesh_builder_0.glsl",
+        "./gl/mesh/mesh_updater_0.glsl",
+        "./gl/vs/vs_0.glsl",
+        "./gl/fs/fs_0.glsl",
+    ),
 ]
 
 
@@ -38,7 +43,9 @@ class Mesh(object):
         self.program = gl.program(vertex_shader=VS, fragment_shader=FS)
         self.builder.run(1)
 
-        self.node = gl.vertex_array(self.program, [(vb, "4f 4f", "in_pos", "in_normal")], ib, skip_errors=True)
+        self.node = gl.vertex_array(
+            self.program, [(vb, "4f 4f", "in_pos", "in_normal")], ib, skip_errors=True
+        )
 
         self.m = translate(mat4(1.0), vec3(0.0, 0.0, -6.0))
         self.vp = perspective(radians(74.0), WIDTH / HEIGHT, 0.01, 100.0)
@@ -47,10 +54,10 @@ class Mesh(object):
         self.uniform("vp", _flatmat(self.vp))
 
     def uniform(self, uname, uvalue):
-        if uname not in self.program:
-            return
-
-        self.program[uname] = uvalue
+        if uname in self.updater:
+            self.updater[uname] = uvalue
+        if uname in self.program:
+            self.program[uname] = uvalue
 
     def render(self):
         if self.updater:
@@ -58,7 +65,7 @@ class Mesh(object):
 
         t = glfw.get_time()
 
-        self.m = rotate(self.m, 0.06, mix(UP, RIGHT, cos(t * 3.0) * 0.5 + 0.5))
+        self.m = rotate(self.m, 0.01, mix(UP, RIGHT, cos(t * 0.1) * 0.1))
         self.uniform("m", _flatmat(self.m))
         self.node.render()
 
@@ -75,6 +82,34 @@ class Client(object):
         observer = Observer()
         observer.schedule(hand, "./gl", True)
         observer.start()
+
+        self.is_drag = False
+        self.prev_pos = ivec2(0, 0)
+
+        glfw.set_mouse_button_callback(window, self.on_mouse_button)
+        glfw.set_cursor_pos_callback(window, self.on_cursor_pos)
+
+    def on_mouse_button(self, window, button, action, mods):
+        if button == glfw.MOUSE_BUTTON_MIDDLE:
+            if action == glfw.PRESS:
+                self.is_drag = True
+                glfw.set_input_mode(window, glfw.RAW_MOUSE_MOTION, glfw.TRUE)
+                glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+                self.prev_pos = ivec2(glfw.get_cursor_pos(window))
+
+            elif action == glfw.RELEASE:
+                self.is_drag = False
+                glfw.set_input_mode(window, glfw.RAW_MOUSE_MOTION, glfw.FALSE)
+                glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
+
+    def on_cursor_pos(self, window, x, y):
+        pos = ivec2(x, y)
+        d = pos - self.prev_pos
+        self.prev_pos = pos
+
+        if self.is_drag:
+            new_pos = ivec2(glfw.get_window_pos(window)) + d
+            glfw.set_window_pos(window, *new_pos)
 
     def set_need_compile(self):
         self._need_compile = True
@@ -113,7 +148,7 @@ class Client(object):
 def main():
     glfw.init()
     glfw.window_hint(glfw.FLOATING, glfw.TRUE)
-    window = glfw.create_window(WIDTH, HEIGHT, "hello", None, None)
+    window = glfw.create_window(WIDTH, HEIGHT, "hello, pyglm", None, None)
     glfw.make_context_current(window)
     client = Client(window)
     while not glfw.window_should_close(window):

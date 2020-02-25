@@ -9,15 +9,17 @@ in VS_OUT
 
 out vec4 fs_colour;
 
+uniform mat4 m = mat4(1.0);
+
 void main()
 {
     vec3 light_pos = vec3(-10.0, 10.0, -12.0);
     vec3 P = vs_out.vs_world_pos.xyz;
-    vec3 N = vs_out.vs_normal.xyz;
+    vec3 N = normalize((m * vs_out.vs_normal).xyz);
     vec3 L = normalize(light_pos - P);
 
     float lambert = dot(N, L);
-    lambert = lambert * 0.5 + 0.5;
+    lambert = clamp(lambert, 0.0, 1.0);
 
-    fs_colour = vec4(lambert, lambert, lambert, 1.0);
+    fs_colour = vec4(lambert.xxx, 1.0);
 }
