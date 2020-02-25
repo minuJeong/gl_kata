@@ -468,8 +468,6 @@ void main()
     }
 
     vec3 rgb = blend(tex_rgb, overlay, mask * u_slider_alpha, blend_mode);
-    vec3 rgb2 = blend(tex_rgb, overlay, mask * u_slider_alpha, BLEND_MULTIPLY);
-    rgb = mix(rgb, rgb2, 0.5);
 
     fs_colour = vec4(rgb, alpha);
 }
