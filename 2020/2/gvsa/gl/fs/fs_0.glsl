@@ -12,6 +12,15 @@ out vec4 fs_colour;
 uniform vec3 camera_pos = vec3(0.0, 0.0, 0.0);
 uniform mat4 m = mat4(1.0);
 
+highp float hash13(vec3 n)
+{
+    highp vec3 p = vec3(12.532143, 3.431567, 77.432162);
+    highp float x = dot(p, n);
+    x = mod(x, 3.14159284 * 2.0);
+    x = fract(cos(x) * 43215.532143);
+    return x;
+}
+
 void main()
 {
     vec3 light_pos = vec3(-5.0, 5.0, -10.0);
@@ -29,6 +38,7 @@ void main()
     lambert = clamp(lambert, 0.12, 1.0);
 
     float light = blinn + lambert;
+    light *= hash13(P * 0.1);
 
     fs_colour = vec4(light.xxx, 1.0);
 }

@@ -20,7 +20,7 @@ uniform float u_time;
 uniform mat4 vp = mat4(1.0);
 
 
-highp float hash11(vec3 n)
+highp float hash13(vec3 n)
 {
     highp vec3 p = vec3(12.532143, 3.431567, 77.432162);
     highp float x = dot(p, n);
@@ -37,7 +37,7 @@ void main()
 
     float offset_progress = cos(u_time * 8.0) * 0.45 + 0.5;
     offset_progress = pow(offset_progress, 6.0) * 0.5;
-    offset_progress += hash11(normal) * 0.1;
+    offset_progress += hash13(normal) * 0.1;
     vec3 offset = offset_progress * normal;
 
     for (int i = 0; i < gl_in.length(); i++)
