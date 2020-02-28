@@ -7,11 +7,9 @@ out VS_OUT
 {
     vec4 vs_local_pos;
     vec4 vs_world_pos;
-    vec4 vs_normal;
 } vs_out;
 
 uniform mat4 m = mat4(1.0);
-uniform mat4 vp = mat4(1.0);
 uniform float u_time;
 
 void main()
@@ -19,7 +17,5 @@ void main()
     vs_out.vs_local_pos = in_pos;
 
     vs_out.vs_world_pos = m * vs_out.vs_local_pos;
-    gl_Position = vp * vs_out.vs_world_pos;
-
-    vs_out.vs_normal = in_normal;
+    gl_Position = vs_out.vs_world_pos;
 }

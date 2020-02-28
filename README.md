@@ -9,6 +9,7 @@ requirements
 - numpy
 - imageio
 - Pillow
-- glm
+- pyglm
 - PyQt5
 - pyGLFW
+- watchdog
