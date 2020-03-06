@@ -7,23 +7,24 @@ from glm import *
 from const import LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT, UP, WIDTH, HEIGHT
 
 
-def uniform(p, n, v):
+def uniform(p: mg.program, n: str, v: object) -> None:
     p[n] = v if n in p else None
 
 
-def mat_to_floats(m):
+def mat_to_floats(m: mat4) -> object:
     for v in m:
         for x in v:
             yield x
 
 
-def screen_quad():
+def screen_quad() -> tuple:
     p, q = vec4(-1.0, -1.0, 0.0, 1.0), vec4(+1.0, -1.0, 0.0, 1.0)
     s, t = vec4(-1.0, +1.0, 0.0, 1.0), vec4(+1.0, +1.0, 0.0, 1.0)
     return (*p, *q, *s, *t)
 
 
-def quad_at(i: int, f: vec3, r: vec3, u: vec3):
+def quad_at(i: int, f: vec3, r: vec3, u: vec3) -> tuple:
+    f, r, u = f * 0.5, r * 0.5, u * 0.5
     v0, v1 = f + r + u, f - r + u
     v2, v3 = f + r - u, f - r - u
     return (
@@ -105,6 +106,7 @@ class Cube(_RenderObject):
         self.m = rotate(self.m, 0.02, UP)
         self.m = rotate(self.m, 0.02, RIGHT)
         self.m = rotate(self.m, 0.02, FRONT)
+
         self.uniform("mvp", tuple(mat_to_floats(self.p * self.v * self.m)))
 
         self.gl.enable(mg.DEPTH_TEST)
