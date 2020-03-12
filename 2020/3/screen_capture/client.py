@@ -19,6 +19,11 @@ class WindowClient(object):
 
         self.window = window
 
+        m = glfw.get_primary_monitor()
+        _, _, w, h = glfw.get_monitor_workarea(m)
+        ww, wh = glfw.get_window_size(window)
+        glfw.set_window_pos(window, w // 2 - ww // 2, h // 2 - wh // 2)
+
         self._isdrag = False
         self._prevpos = ivec2(0, 0)
 
@@ -143,7 +148,6 @@ class Client(WindowClient):
             print("compiled")
 
         except Exception as e:
-            raise e
             print(e)
 
     def capture(self):
@@ -167,6 +171,7 @@ class Client(WindowClient):
             self._compile()
 
         self.uniform("u_time", glfw.get_time())
+        self.uniform("u_mousepos", glfw.get_cursor_pos(self.window))
 
         self.gbuffer.use()
         for node in self.scene:
