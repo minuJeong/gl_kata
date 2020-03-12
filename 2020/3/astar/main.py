@@ -28,10 +28,6 @@ class Node(object):
         return (self.x, self.y)
 
 
-def heuristic(pos):
-    pass
-
-
 def astar(start, goal, nodes):
     openset = [start]
     closeset = []
@@ -104,7 +100,6 @@ def astar(start, goal, nodes):
         for neighbor in _get_neighbors(cursor):
             neighbor.prev_node = cursor
             neighbor.fit_score = _eval_cost_spent(neighbor) + _eval_cost(neighbor, goal)
-
             if neighbor not in openset:
                 openset.append(neighbor)
 
