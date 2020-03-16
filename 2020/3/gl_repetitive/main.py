@@ -23,6 +23,10 @@ class Client(object):
         self.window = window
 
         self.gl = mg.create_context()
+        if not self.gl:
+            print("can't create gl context")
+            return
+
         self._compile()
 
         def on_mod(e):
@@ -34,6 +38,7 @@ class Client(object):
         observer.schedule(handler, "./gl", True)
         observer.start()
 
+        self._isresizing = False
         self._isdrag_camera = False
         self._isdrag_light = False
         self._isdrag_right = False
@@ -49,10 +54,13 @@ class Client(object):
         glfw.set_mouse_button_callback(window, self.on_mouse_button)
         glfw.set_cursor_pos_callback(window, self.on_cursor_pos)
         glfw.set_scroll_callback(window, self.on_scroll)
+        glfw.set_cursor_enter_callback(window, self.on_cursor_enter)
 
     def on_framebuffer_size(self, window, width, height):
+        self._isresizing = True
         self.uniform("u_resolution", (width, height))
         self.gl.viewport = (0, 0, width, height)
+        self._isresizing = False
 
     def on_mouse_button(self, window, button, action, mods):
         ispress = action == glfw.PRESS
@@ -74,6 +82,7 @@ class Client(object):
         p = (x, y)
         dx, dy = p[0] - self._prevpos[0], p[1] - self._prevpos[1]
         self._prevpos = p
+        self.uniform("u_mousepos", (x, y))
 
         # rotate camera
         if self._isdrag_camera:
@@ -100,6 +109,8 @@ class Client(object):
             glfw.set_window_pos(window, int(wx + dx), int(wy + dy))
 
     def on_scroll(self, window, x, y):
+        self._isresizing = True
+
         w, h = glfw.get_window_size(window)
         a = 1.1 if y > 0.0 else 0.9
         w, h = w * a, h * a
@@ -108,6 +119,11 @@ class Client(object):
         glfw.set_window_size(window, w, h)
         x, y = glfw.get_window_pos(window)
         glfw.set_window_pos(window, x - (w - old_w) // 2, y - (h - old_h) // 2)
+
+        self._isresizing = False
+
+    def on_cursor_enter(self, window, entered):
+        self.uniform("u_ismouseover", bool(entered))
 
     def _compile(self):
         self._dirty = False
@@ -130,14 +146,18 @@ class Client(object):
                 ib,
             )
             self.uniform = partial(_uniform, self.vao.program)
-
             width, height = glfw.get_window_size(self.window)
             self.uniform("u_resolution", (width, height))
+
+            print("compiled")
 
         except Exception as e:
             print(e)
 
     def update(self):
+        if self._isresizing:
+            return
+
         if self._dirty:
             # skip a frame while compiling it
             self._compile()
@@ -145,6 +165,8 @@ class Client(object):
 
         self.uniform("u_campos", (*self._campos,))
         self.uniform("u_lightpos", (*self._lightpos,))
+        self.uniform("u_time", glfw.get_time())
+
         self.gl.clear()
         self.vao.render()
 
@@ -154,6 +176,7 @@ def main():
     glfw.window_hint(glfw.FLOATING, glfw.TRUE)
     glfw.window_hint(glfw.DECORATED, glfw.FALSE)
     glfw.window_hint(glfw.TRANSPARENT_FRAMEBUFFER, glfw.TRUE)
+    glfw.window_hint(glfw.RESIZABLE, glfw.FALSE)
     window = glfw.create_window(1280, 720, "window", None, None)
     glfw.make_context_current(window)
 
