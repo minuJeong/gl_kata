@@ -22,7 +22,7 @@ void main()
     vec2 uv = v2f_pos.xy;
     uv.y = 1.0 - uv.y;
 
-    uv *= 124.0;
+    uv *= 2.0;
     vec2 coord = floor(uv);
     uv = fract(uv);
     uv = uv * 2.0 - 1.0;
