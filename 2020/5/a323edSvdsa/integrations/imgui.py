@@ -5,78 +5,6 @@ import moderngl
 from imgui.integrations.opengl import BaseOpenGLRenderer
 
 
-class ModernglWindowMixin:
-
-    def resize(self, width: int, height: int):
-        self.io.display_size = (
-            self.wnd.viewport_width / self.wnd.pixel_ratio,
-            self.wnd.viewport_height / self.wnd.pixel_ratio,
-        )
-
-    def key_event(self, key, action, modifiers):
-        keys = self.wnd.keys
-
-        if action == keys.ACTION_PRESS:
-            if key in self.REVERSE_KEY_MAP:
-                self.io.keys_down[self.REVERSE_KEY_MAP[key]] = True
-        else:
-            if key in self.REVERSE_KEY_MAP:
-                self.io.keys_down[self.REVERSE_KEY_MAP[key]] = False
-
-    def _mouse_pos_viewport(self, x, y):
-        """Make sure mouse coordinates are correct with black borders"""
-        return (
-            int(x - (self.wnd.width - self.wnd.viewport_width / self.wnd.pixel_ratio) / 2),
-            int(y - (self.wnd.height - self.wnd.viewport_height / self.wnd.pixel_ratio) / 2),
-        )
-
-    def mouse_position_event(self, x, y, dx, dy):
-        self.io.mouse_pos = self._mouse_pos_viewport(x, y)
-
-    def mouse_drag_event(self, x, y, dx, dy):
-        self.io.mouse_pos = self._mouse_pos_viewport(x, y)
-
-        if self.wnd.mouse_states.left:
-            self.io.mouse_down[0] = 1
-
-        if self.wnd.mouse_states.middle:
-            self.io.mouse_down[1] = 1
-
-        if self.wnd.mouse_states.right:
-            self.io.mouse_down[2] = 1
-
-    def mouse_scroll_event(self, x_offset, y_offset):
-        self.io.mouse_wheel = y_offset
-
-    def mouse_press_event(self, x, y, button):
-        self.io.mouse_pos = self._mouse_pos_viewport(x, y)
-
-        if button == self.wnd.mouse.left:
-            self.io.mouse_down[0] = 1
-
-        if button == self.wnd.mouse.middle:
-            self.io.mouse_down[2] = 1
-
-        if button == self.wnd.mouse.right:
-            self.io.mouse_down[1] = 1
-
-    def mouse_release_event(self, x: int, y: int, button: int):
-        self.io.mouse_pos = self._mouse_pos_viewport(x, y)
-
-        if button == self.wnd.mouse.left:
-            self.io.mouse_down[0] = 0
-
-        if button == self.wnd.mouse.middle:
-            self.io.mouse_down[2] = 0
-
-        if button == self.wnd.mouse.right:
-            self.io.mouse_down[1] = 0
-
-    def unicode_char_entered(self, char):
-        io = imgui.get_io()
-        io.add_input_character(ord(char))
-
-
 class ModernGLRenderer(BaseOpenGLRenderer):
 
     VERTEX_SHADER_SRC = """
@@ -100,7 +28,7 @@ class ModernGLRenderer(BaseOpenGLRenderer):
         in vec4 Frag_Color;
         out vec4 Out_Color;
         void main() {
-            Out_Color = (Frag_Color * texture(Texture, Frag_UV.st));
+            Out_Color = Frag_Color * texture(Texture, Frag_UV.st);
         }
     """
 
@@ -208,43 +136,3 @@ class ModernGLRenderer(BaseOpenGLRenderer):
 
         self.io.fonts.texture_id = 0
         self._font_texture = None
-
-
-class ModernglWindowRenderer(ModernGLRenderer, ModernglWindowMixin):
-
-    def __init__(self, window):
-        super().__init__(wnd=window)
-        self.wnd = window
-
-        self._init_key_maps()
-        self.io.display_size = self.wnd.size
-        self.io.display_fb_scale = self.wnd.pixel_ratio, self.wnd.pixel_ratio
-
-    def _init_key_maps(self):
-        keys = self.wnd.keys
-
-        self.REVERSE_KEY_MAP = {
-            keys.TAB: imgui.KEY_TAB,
-            keys.LEFT: imgui.KEY_LEFT_ARROW,
-            keys.RIGHT: imgui.KEY_RIGHT_ARROW,
-            keys.UP: imgui.KEY_UP_ARROW,
-            keys.DOWN: imgui.KEY_DOWN_ARROW,
-            keys.PAGE_UP: imgui.KEY_PAGE_UP,
-            keys.PAGE_DOWN: imgui.KEY_PAGE_DOWN,
-            keys.HOME: imgui.KEY_HOME,
-            keys.END: imgui.KEY_END,
-            keys.DELETE: imgui.KEY_DELETE,
-            keys.SPACE: imgui.KEY_SPACE,
-            keys.BACKSPACE: imgui.KEY_BACKSPACE,
-            keys.ENTER: imgui.KEY_ENTER,
-            keys.ESCAPE: imgui.KEY_ESCAPE,
-            keys.A: imgui.KEY_A,
-            keys.C: imgui.KEY_C,
-            keys.V: imgui.KEY_V,
-            keys.X: imgui.KEY_X,
-            keys.Y: imgui.KEY_Y,
-            keys.Z: imgui.KEY_Z,
-        }
-
-        for value in self.REVERSE_KEY_MAP.values():
-            self.io.key_map[value] = value

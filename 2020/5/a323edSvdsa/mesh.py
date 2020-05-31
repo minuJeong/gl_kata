@@ -73,6 +73,16 @@ class Mesh(object):
             print(e)
             return self.program
 
+    def uniform(self, uname, uvalue):
+        assert self.program is not None
+        if uname not in self.program:
+            return
+
+        if isinstance(uvalue, (mat2, mat3, mat4)):
+            self.program[uname].write(uvalue)
+
+        self.program[uname] = uvalue
+
     def render(self):
         raise NotImplementedError
 
