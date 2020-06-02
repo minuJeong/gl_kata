@@ -22,4 +22,5 @@
 *.pdb
 *.ilk
 *.vs
+imgui.ini
 Pipfile
