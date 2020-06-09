@@ -140,6 +140,19 @@ class ModernGLRenderer(BaseOpenGLRenderer):
 
 
 class ModernGLGLFWRenderer(ModernGLRenderer):
+
+    def on_resize(self, window, width, height):
+        pass
+
+    def on_cursor_pos(self, window, x, y):
+        pass
+
+    def on_mouse_button(self, window, button, action, mods):
+        pass
+
+    def on_scroll(self, window, scroll_x, scroll_y):
+        pass
+
     def wire_events(self, gl, window):
         """
         :param gl:
@@ -149,20 +162,24 @@ class ModernGLGLFWRenderer(ModernGLRenderer):
         glfw window handle
         """
 
-        def resize(window, width, height):
+        def on_resize(window, width, height):
             gl.viewport = (0, 0, width, height)
             imgui.get_io().display_size = width, height
+            self.on_resize(window, width, height)
 
         def on_cursor_pos(window, x, y):
             imgui.get_io().mouse_pos = x, y
+            self.on_cursor_pos(window, x, y)
 
         def on_mouse_button(window, button, action, mods):
             imgui.get_io().mouse_down[button] = action
+            self.on_mouse_button(window, button, action, mods)
 
         def on_scroll(window, scroll_x, scroll_y):
             imgui.get_io().mouse_wheel = scroll_y
+            self.on_scroll(window, scroll_x, scroll_y)
 
-        glfw.set_window_size_callback(window, resize)
+        glfw.set_window_size_callback(window, on_resize)
         glfw.set_cursor_pos_callback(window, on_cursor_pos)
         glfw.set_mouse_button_callback(window, on_mouse_button)
         glfw.set_scroll_callback(window, on_scroll)
