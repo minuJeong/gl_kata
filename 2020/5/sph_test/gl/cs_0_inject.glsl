@@ -1,6 +1,6 @@
 #version 460
 
-layout(local_size_x=8, local_size_x=8) in;
+layout(local_size_x=4, local_size_y=4, local_size_z=4) in;
 
 struct Particle
 {
@@ -38,23 +38,22 @@ float hash13(vec3 uvw)
 
 void main()
 {
-    uvec2 xy = gl_LocalInvocationID.xy + gl_WorkGroupID.xy * gl_WorkGroupSize.xy;
-    vec3 xyz = vec3(xy.x, 0.0, xy.y);
-    vec3 uvw = xyz / vec3(8 * 64);
+    uint i = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * 64 + gl_GlobalInvocationID.z * 256;
 
+    vec3 xyz = vec3(gl_GlobalInvocationID.xyz);
     float x = xyz.x, y = xyz.y, z = xyz.z;
 
-    vec3 velocity = vec3(uvw);
-    velocity.x += hash12(velocity.yz);
-    velocity.y += hash12(velocity.xz);
-    velocity.z += hash12(velocity.xy);
-    velocity = normalize(velocity) * 0.02;
+    vec3 velocity = vec3(0.0);
+    velocity.x = cos(float(i) * 0.001);
+    velocity.y = -0.1;
+    velocity.z = sin(float(i) * 0.001);
+    velocity = normalize(velocity) * 0.05;
+
+    vec3 position = vec3(0.0);
 
     Particle particle;
-    particle.position = vec4(uvw, 1.0);
+    particle.position = vec4(position, 1.0);
     particle.velocity = vec4(velocity, 0.0);
-    particle.texcoord0 = vec4(x, y, z, 1.0);
-
-    int i = int(xyz.x * 4 * 4 + xyz.y * 4 + xyz.z);
+    particle.texcoord0 = vec4(x, y, z, 1.0);    
     particles[i] = particle;
 }

@@ -11,7 +11,6 @@ float gb_at(vec2 uv)
     vec4 texcol = texture(gb_color, uv);
     float x = length(texcol.xyz);
     return x;
-    
 }
 
 void main()
@@ -26,8 +25,12 @@ void main()
     float dy = x - gb_at(uv - e.yx);
     vec3 N = normalize(vec3(dx, dy, 1.0));
 
-    rgb = mix(vec3(0.2, 0.23, 0.32), vec3(0.34, 0.7, 0.8), smoothstep(0.22, 0.32, x));
+    x = smoothstep(0.02, 0.12, x);
+    rgb = mix(vec3(0.2, 0.23, 0.32), vec3(0.34, 0.7, 0.8), x);
     rgb *= max(dot(N, normalize(vec3(3, 4, 5))), 0.0);
+
+    // DEBUG
+    rgb = texture(gb_color, uv).xyz;
 
     fs_color = vec4(rgb, 1.0);
 }

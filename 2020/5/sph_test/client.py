@@ -12,9 +12,8 @@ from watchdog.observers import Observer
 from integrations.imgui import ModernGLGLFWRenderer
 
 
-NUM_PARTICLES = 16384
-NUM_THREADS_PER_GROUP = 128
-PATICLE_CS_GROUP_SIZE_X = math.ceil(NUM_PARTICLES / NUM_THREADS_PER_GROUP)
+NUM_PARTICLES = 32 * 32 * 32
+NUM_THREADS_PER_GROUP = 64
 
 NUM_GRID = 12 * 12 * 12
 GRID_CS_GROUP_SIZE_X = math.ceil(NUM_GRID / NUM_THREADS_PER_GROUP)
@@ -60,15 +59,11 @@ class InjectStage(SimulateStage):
     def __init__(self, gl):
         super().__init__(gl, "./gl/cs_0_inject.glsl")
 
-        self.frame = 0
-
-        self.uniform("u_emitter_position", vec3(0.0, 0.0, 0.0))
-        self.uniform("u_frame", self.frame)
-
     def run(self, gx=1, gy=1, gz=1):
-        self.frame += 1
-        self.uniform("u_frame", self.frame)
-        super().run(4, 4, 4)
+        gx = NUM_PARTICLES // 64
+        gy = NUM_PARTICLES // 64
+        gz = NUM_PARTICLES // 64
+        super().run(gx, gy, gz)
 
 
 class AdvectStage(SimulateStage):
@@ -85,6 +80,12 @@ class AdvectStage(SimulateStage):
 class PressureStage(SimulateStage):
     def __init__(self, gl):
         super().__init__(gl, "./gl/cs_2_pressure.glsl")
+
+    def run(self):
+        gx = NUM_PARTICLES // 64
+        gy = NUM_PARTICLES // 64
+        gz = NUM_PARTICLES // 64
+        super().run(gx, gy, gz)
 
 
 class VorticityStage(SimulateStage):
@@ -108,6 +109,9 @@ class ParticlesBuffer(StorageBuffer):
     def __init__(self, gl):
         super().__init__(gl)
 
+        # position
+        # velocity
+        # texcoord0
         buffer_size = (4 + 4 + 4) * NUM_PARTICLES
         self.buffer = self.gl.buffer(reserve=buffer_size)
         self.buffer.bind_to_storage_buffer(ParticlesBuffer.BIND_CHANNEL)
@@ -119,7 +123,9 @@ class GridBuffer(StorageBuffer):
     def __init__(self, gl):
         super().__init__(gl)
 
-        buffer_size = (4 + 1 + 1) * NUM_GRID
+        # vec4 velosity
+        # float density
+        buffer_size = (4 + 1) * NUM_GRID
         self.buffer = self.gl.buffer(reserve=buffer_size)
         self.buffer.bind_to_storage_buffer(GridBuffer.BIND_CHANNEL)
 
@@ -222,7 +228,9 @@ class Client(object):
     def __init__(self, window):
         super().__init__()
 
+        # create moderngl context
         self.gl = mg.create_context()
+
         self.window = window
 
         self.width, self.height = glfw.get_window_size(window)
@@ -237,10 +245,10 @@ class Client(object):
             radians(94.0), self.width, self.height, 0.5, 100.0
         )
 
-        distance = 5.0
+        distance = 1.6
         self.prev_time = 0.0
         self.camera_pos = vec3(distance, distance * 0.5, -distance)
-        self.lookat = lookAt(self.camera_pos, vec3(0.0, -2.0, 0.0), vec3(0.0, 1.0, 0.0))
+        self.lookat = lookAt(self.camera_pos, vec3(0.0, -0.5, 0.0), vec3(0.0, 1.0, 0.0))
         self.mvp = self.perspective * self.lookat
         self.compile_shaders()
 
@@ -274,7 +282,7 @@ class Client(object):
                 rotation_speed = 0.05
                 c, s = cos(dragged.x * rotation_speed), sin(dragged.x * rotation_speed)
                 self.camera_pos.xz = mat2(c, s, -s, c) * self.camera_pos.xz
-                self.lookat = lookAt(self.camera_pos, vec3(0.0, -2.0, 0.0), vec3(0.0, 1.0, 0.0))
+                self.lookat = lookAt(self.camera_pos, vec3(0.0, -0.5, 0.0), vec3(0.0, 1.0, 0.0))
                 self.mvp = self.perspective * self.lookat
                 self.particles_vertex_array.uniform("u_mvp", self.mvp)
 
@@ -284,7 +292,7 @@ class Client(object):
             x, y = glfw.get_cursor_pos(window)
 
             if button == glfw.MOUSE_BUTTON_LEFT:
-                if action == glfw.PRESS:
+                if action == glfw.PRESS and mods == glfw.MOD_ALT:
                     is_drag = True
                 elif action == glfw.RELEASE:
                     is_drag = False
@@ -357,6 +365,7 @@ class Client(object):
 
         self.gl.screen.use()
         self.gl.disable(mg.CULL_FACE)
+        self.gl.clear(0.0, 0.0, 0.0)
         self.color.use(0)
         self.postprocess.uniform("gb_color", 0)
         self.postprocess.render()
@@ -365,17 +374,16 @@ class Client(object):
         imgui.new_frame()
 
         if imgui.begin_main_menu_bar():
-            if imgui.begin_menu("A"):
+            if imgui.begin_menu("Test Menu"):
                 imgui.end_menu()
 
             imgui.end_main_menu_bar()
 
-        if True:
-            imgui.begin("Control")
-            imgui.text(f"FPS {1.0 / (dt):.2f}")
-            imgui.end()
-
+        imgui.begin("Control")
+        imgui.text(f"FPS {1.0 / (dt):.2f}")
+        imgui.end()
         imgui.render()
+
         self.imgui.render(imgui.get_draw_data())
 
 
