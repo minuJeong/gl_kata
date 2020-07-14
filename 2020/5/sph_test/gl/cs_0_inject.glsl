@@ -14,14 +14,15 @@ layout(binding=0) buffer particles_buffer
     Particle particles[];
 };
 
-struct Cell
+struct Grid
 {
     vec4 velocity;
+    float density;
 };
 
-layout(binding=1) buffer grid
+layout(binding=1) buffer grid_buffer
 {
-    Cell cell[];
+    Grid grids[];
 };
 
 uniform vec3 u_emitter_position;

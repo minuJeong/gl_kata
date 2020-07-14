@@ -81,9 +81,6 @@ void main()
     uint i = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * 64 + gl_GlobalInvocationID.z * 256;
     Particle particle = particles[i];
 
-    uint g = 0;
-    Grid grid = get_grid(particle.position.xyz, g);
-
     particle.position += particle.velocity * u_deltatime;
     vec3 pos = particle.position.xyz;
     vec3 vel = particle.velocity.xyz;
@@ -95,7 +92,8 @@ void main()
     particle.velocity.xyz = vel.xyz;
     particles[i] = particle;
 
-    grid.velocity = vec4(0.0);
-    grid.density = 0.0;
+    uint g = 0;
+    Grid grid = get_grid(particle.position.xyz, g);
+
     grids[g] = grid;
 }

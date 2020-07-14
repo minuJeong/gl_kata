@@ -43,6 +43,9 @@ void main()
     uint g = 0;
     Grid grid = get_grid(particle.position.xyz + particle.velocity.xyz, g);
 
+    grid.velocity += particle.velocity * 0.01;
+    grid.density += 0.001;
+
     particles[i] = particle;
     grids[g] = grid;
 }

@@ -150,10 +150,12 @@ class VertexArray(object):
 
         if isinstance(uvalue, (mat2, mat3, mat4)):
             self.program[uname].write(uvalue)
+        elif isinstance(uvalue, (vec2, vec3, vec4)):
+            self.program[uname] = (*uvalue,)
         elif isinstance(uvalue, (float, int, bool, tuple)):
             self.program[uname] = uvalue
         else:
-            print(type(uvalue))
+            print(f"undefined type: {type(uvalue)} ({uname})")
 
 
 class ParticlesVertexArray(VertexArray):
@@ -248,7 +250,8 @@ class Client(object):
         distance = 1.6
         self.prev_time = 0.0
         self.camera_pos = vec3(distance, distance * 0.5, -distance)
-        self.lookat = lookAt(self.camera_pos, vec3(0.0, -0.5, 0.0), vec3(0.0, 1.0, 0.0))
+        self.focus = vec3(0.0, -0.5, 0.0)
+        self.lookat = lookAt(self.camera_pos, self.focus, vec3(0.0, 1.0, 0.0))
         self.mvp = self.perspective * self.lookat
         self.compile_shaders()
 
@@ -268,7 +271,18 @@ class Client(object):
         prev_pos = ivec2(0, 0)
 
         def on_resize(window, width, height):
-            pass
+            self.width, self.height = int(max(width, 1)), int(max(height, 1))
+            self.gl.viewport = (0, 0, width, height)
+
+            self.color = self.gl.texture((self.width, self.height), 4)
+            self.gbuffer = self.gl.framebuffer([self.color])
+
+            self.perspective = perspectiveFov(
+                radians(94.0), self.width, self.height, 0.5, 100.0
+            )
+            self.mvp = self.perspective * self.lookat
+            self.particles_vertex_array.uniform("u_mvp", self.mvp)
+            self.postprocess.uniform("u_resolution", (self.width, self.height))
 
         def on_cursor_pos(window, x, y):
             nonlocal is_drag
@@ -279,12 +293,20 @@ class Client(object):
             prev_pos = pos
 
             if is_drag:
-                rotation_speed = 0.05
+                rotation_speed = 0.02
                 c, s = cos(dragged.x * rotation_speed), sin(dragged.x * rotation_speed)
                 self.camera_pos.xz = mat2(c, s, -s, c) * self.camera_pos.xz
-                self.lookat = lookAt(self.camera_pos, vec3(0.0, -0.5, 0.0), vec3(0.0, 1.0, 0.0))
+
+                camera_right = cross(normalize(self.focus - self.camera_pos), vec3(0.0, 1.0, 0.0))
+                vertical_rotation = rotate(mat4(1.0), dragged.y * rotation_speed, camera_right)
+                self.camera_pos = (vertical_rotation * vec4(self.camera_pos, 1.0)).xyz
+
+                self.lookat = lookAt(self.camera_pos, self.focus, vec3(0.0, 1.0, 0.0))
+
                 self.mvp = self.perspective * self.lookat
                 self.particles_vertex_array.uniform("u_mvp", self.mvp)
+                self.postprocess.uniform("u_camera_pos", self.camera_pos)
+                self.postprocess.uniform("u_camera_focus", self.focus)
 
         def on_mouse_button(window, button, action, mods):
             nonlocal is_drag
@@ -294,8 +316,12 @@ class Client(object):
             if button == glfw.MOUSE_BUTTON_LEFT:
                 if action == glfw.PRESS and mods == glfw.MOD_ALT:
                     is_drag = True
+                    glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+                    glfw.set_input_mode(window, glfw.RAW_MOUSE_MOTION, glfw.TRUE)
                 elif action == glfw.RELEASE:
                     is_drag = False
+                    glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
+                    glfw.set_input_mode(window, glfw.RAW_MOUSE_MOTION, glfw.FALSE)
 
                 prev_pos = ivec2(x, y)
 
@@ -323,12 +349,21 @@ class Client(object):
             self.particles = ParticlesBuffer(self.gl)
             self.grid = GridBuffer(self.gl)
 
+            # gbuffer
             self.color = self.gl.texture((self.width, self.height), 4)
             self.gbuffer = self.gl.framebuffer([self.color])
+
+            # particles
             self.particles_vertex_array = ParticlesVertexArray(
                 self.gl, self.particles, self.mvp, self.width, self.height
             )
+            self.particles_vertex_array.uniform("u_mvp", self.mvp)
+
+            # postprocess
             self.postprocess = PostProcess(self.gl)
+            self.postprocess.uniform("u_camera_pos", self.camera_pos)
+            self.postprocess.uniform("u_camera_focus", self.focus)
+            self.postprocess.uniform("u_resolution", (self.width, self.height))
 
             InjectStage(self.gl).run()
 
