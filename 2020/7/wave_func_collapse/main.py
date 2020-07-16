@@ -1,5 +1,7 @@
+import os
 import json
 import random
+from multiprocessing import process
 
 import numpy as np
 import imageio as ii
@@ -29,26 +31,20 @@ class Cell(object):
         return f"cell[{self.x}, {self.y}] - {self.resource_tile.index}"
 
     def collapse(self):
-        coords = self.cells.keys()
+        def rule(coords, directions, neighbors, resource_tiles, contradiction):
+            def adjacency_test(a, b, _direction):
+                comp = None
+                if _direction == (-1, 0):
+                    comp = a[:, +0] == b[:, -1]
+                elif _direction == (+1, 0):
+                    comp = a[:, -1] == b[:, +0]
+                elif _direction == (0, -1):
+                    comp = a[+0, :] == b[-1, :]
+                elif _direction == (0, +1):
+                    comp = a[-1, :] == b[+0, :]
 
-        directions = [(-1, 0), (+1, 0), (0, -1), (0, +1)]
-        neighbors = list(map(lambda xy: (self.x + xy[0], self.y + xy[1]), directions))
-
-        def adjacency_test(a, b, _direction):
-            if _direction == (-1, 0):
-                return (a[:, 0] == b[:, -1]).all()
-            elif _direction == (+1, 0):
-                return (a[:, -1] == b[:, 0]).all()
-            elif _direction == (0, -1):
-                return (a[0, :] == b[-1, :]).all()
-            elif _direction == (0, +1):
-                return (a[-1, :] == b[0, :]).all()
-
-        contradiction = 20
-        while contradiction > 0:
-            self.resource_tile = None
-            shuffled_tiles = self.resource_tiles[:]
-            random.shuffle(shuffled_tiles)
+                comp = np.logical_and.reduce(comp, axis=1)
+                return np.count_nonzero(comp) >= max(a.shape[0], a.shape[1]) - 2
 
             adjacent_neighbors = []
             for neighbor_coord, direction in zip(neighbors, directions):
@@ -61,6 +57,8 @@ class Cell(object):
 
                 adjacent_neighbors.append((neighbor, direction))
 
+            shuffled_tiles = resource_tiles[:]
+            random.shuffle(shuffled_tiles)
             for tile in shuffled_tiles:
                 a = tile.image
                 adjacency_result = True
@@ -71,10 +69,19 @@ class Cell(object):
                         continue
 
                 if adjacency_result:
-                    self.resource_tile = tile
-                    contradiction = 0
-                else:
-                    contradiction -= 1
+                    return tile, 0
+
+            return None, contradiction - 1
+
+        coords = self.cells.keys()
+        directions = [(-1, 0), (+1, 0), (0, -1), (0, +1)]
+        neighbors = list(map(lambda xy: (self.x + xy[0], self.y + xy[1]), directions))
+
+        contradiction = 20
+        while contradiction > 0:
+            self.resource_tile, contradiction = rule(
+                coords, directions, neighbors, self.resource_tiles, contradiction
+            )
 
         if self.resource_tile is None:
             img = np.zeros_like((self.resource_tiles[0].image), dtype=np.ubyte)
@@ -92,14 +99,26 @@ class Generator(object):
 
         self.resource_tiles = []
         unit_width, unit_height = 1, 1
-        for i, frame_data in enumerate(res["frames"].values()):
+        i = 0
+        for frame_data in res["frames"].values():
             x = frame_data["frame"]["x"]
             y = frame_data["frame"]["y"]
             w = frame_data["frame"]["w"]
             h = frame_data["frame"]["h"]
             unit_width, unit_height = max(w, unit_width), max(h, unit_height)
-            img = atlas[y : y + h, x : x + w]
-            self.resource_tiles.append(Tile(i, img))
+
+            weight = frame_data["duration"]
+            for repeat in range(weight):
+                img_0 = atlas[y : y + h, x : x + w]
+                img_90 = np.rot90(img_0)
+                img_180 = np.rot90(img_90)
+                img_270 = np.rot90(img_180)
+
+                self.resource_tiles.append(Tile(i + 0, img_0))
+                self.resource_tiles.append(Tile(i + 1, img_90))
+                self.resource_tiles.append(Tile(i + 2, img_180))
+                self.resource_tiles.append(Tile(i + 3, img_270))
+                i += 4
 
         self.unit_width, self.unit_height = unit_width, unit_height
 
@@ -137,7 +156,10 @@ class Generator(object):
                 visited.append(xy)
                 self.cells[xy].collapse()
 
-                for next_xy in flood(xy):
+                next_plans = flood(xy)
+                next_plans = list(next_plans)
+                random.shuffle(next_plans)
+                for next_xy in next_plans:
                     if next_xy in next_plan:
                         continue
                     next_plan.append(next_xy)
@@ -162,9 +184,12 @@ class Generator(object):
 def main():
     generator = Generator("./resource")
 
-    for i in range(100):
-        generated_img = generator.generate(width=8, height=8)
-        ii.imwrite(f"generated_world_{i}.png", generated_img)
+    for i in range(4):
+        print(f"generating {i}..")
+        generated_img = generator.generate(width=32, height=32)
+        if not os.path.isdir("./generated"):
+            os.makedirs("./generated")
+        ii.imwrite(f"./generated/generated_world_{i}.jpg", generated_img[:, :, :3])
 
 
 if __name__ == "__main__":
