@@ -1,0 +1,6 @@
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/build/CMakeFiles/uninstall.dir
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/build/CMakeFiles/INSTALL.dir
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/build/CMakeFiles/ALL_BUILD.dir
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/build/CMakeFiles/ZERO_CHECK.dir
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/build/src/CMakeFiles/glfw.dir
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/build/src/CMakeFiles/INSTALL.dir

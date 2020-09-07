@@ -1,0 +1,8 @@
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/include/GLFW/glfw3.h
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/include/GLFW/glfw3native.h
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/lib/cmake/glfw3/glfw3Config.cmake
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/lib/cmake/glfw3/glfw3ConfigVersion.cmake
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/lib/cmake/glfw3/glfw3Targets.cmake
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/lib/cmake/glfw3/glfw3Targets-debug.cmake
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/lib/pkgconfig/glfw3.pc
+C:/STORE/PY/KATA/2020/7/wave_func_collapse_3d/target/debug/build/glfw-sys-50a1381fa91fd6d6/out/lib/glfw3.lib
