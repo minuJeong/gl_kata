@@ -1,0 +1,37 @@
+#version 460
+
+layout(local_size_x=8, local_size_y=8) in;
+
+layout(binding=0) buffer in_img_0_buffer
+{
+    uvec4 cs_in_img_0[];
+};
+
+layout(binding=1) buffer in_img_1_buffer
+{
+    uvec4 cs_in_img_1[];
+};
+
+layout(binding=2) buffer output_buffer
+{
+    uvec4 cs_out[];
+};
+
+uniform sampler2D u_img_0;
+uniform sampler2D u_img_1;
+uniform uvec2 u_resolution;
+
+void main()
+{
+    uvec2 xy = gl_LocalInvocationID.xy + gl_WorkGroupID.xy * gl_WorkGroupSize.xy;
+    vec2 uv = vec2(xy) / vec2(u_resolution);
+
+    uint i = xy.x + xy.y * u_resolution.x;
+    uvec4 img_0 = cs_in_img_0[i];
+    uvec4 img_1 = cs_in_img_1[i];
+
+    cs_out[i].x = 255;
+    cs_out[i].y = img_0.y;
+    cs_out[i].z = 0;
+    cs_out[i].w = 255;
+}
