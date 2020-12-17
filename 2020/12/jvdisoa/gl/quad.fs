@@ -74,10 +74,10 @@ float sdf_world(vec3 p, inout Material material)
 
     float d_1;
     {
-        const float box_2_rotation_speed = -6.43;
+        const float box_2_rotation_speed = -2.43;
         const float box_2_size = 2.15;
         const float box_2_round = 0.25;
-        float displacement_amount = cos(u_time * 7.223) * 0.2;
+        float displacement_amount = cos(u_time * 12.223) * 0.05;
         vec3 q = p;
         q.xz = rot(u_time * box_2_rotation_speed) * q.xz;
         float d_box_1 = sdf_box(q, vec3(box_2_size)) - box_2_round;
@@ -96,31 +96,29 @@ float sdf_world(vec3 p, inout Material material)
 
         vec3 q2 = q;
         q2.yz = rot(u_time * 4.4321) * q2.yz;
-        d += displacement(q2, 1.0) * -0.3;
+        d += displacement(q2, 2.0) * -0.2;
         d_2 = d;
     }
 
     float d_3;
     {
-        const float elastic_timing_scale = 8.324;
+        const float elastic_timing_scale = 12.324;
         const float fracture_scale = 3.0;
+        const float squeeze_scale = 0.15;
         vec3 q = p;
         vec3 coord = floor(q * fracture_scale) / fracture_scale;
         float r = hash(coord);
-        mat2 squeeze = rot(r * q.y * cos(u_time * elastic_timing_scale) * 0.03);
-        q.xz = squeeze * q.xz;
-        q.xy = squeeze * q.xy;
-        q.yz = squeeze * q.yz;
+        float squeeze = r * q.y * (cos(u_time * elastic_timing_scale) * 0.5 + 0.5) * squeeze_scale;
 
-        d_3 = sdf_box(q, 2.2, 2.2, 2.2) - 0.2;
+        d_3 = sdf_box(q, 2.2, 2.2, 2.2) - squeeze;
     }
 
     const float max_time = 15.0;
     float t = mod(u_time, max_time);
-    float t01 = smoothstep(0.0, 4.0, t);
-    float t12 = smoothstep(4.0, 8.0, t);
-    float t23 = smoothstep(8.0, 13.0, t);
-    float t30 = smoothstep(13.0, 15.0, t);
+    float t01 = smoothstep(0.0, 1.0, t);
+    float t12 = smoothstep(4.0, 5.0, t);
+    float t23 = smoothstep(6.0, 7.0, t);
+    float t30 = smoothstep(14.0, 15.0, t);
     float d_01 = mix(d_0, d_1, t01);
     float d_12 = mix(d_01, d_2, t12);
     float d_23 = mix(d_12, d_3, t23);
