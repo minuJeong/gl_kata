@@ -8,7 +8,7 @@ from watchdog.observers import Observer
 
 
 RENDER_RESOLUTION = 1024
-BUFFER_RESOLUTION = 256
+BUFFER_RESOLUTION = 128
 
 
 class Client(object):
